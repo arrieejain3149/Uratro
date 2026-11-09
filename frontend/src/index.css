@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+:root {
+  --default-ease: cubic-bezier(.25, 1, .5, 1);
+  --20: 1.25rem;
+  --40: 2.5rem;
+  --c-obsidian-dust: #0B0B0B;
+  --c-obsidian-dust-1: rgba(255, 255, 255, 0.08);
+  --c-obsidian-dust-6: rgba(255, 255, 255, 0.22);
+  --c-soft-concrete: #F1F1F1;
+  --c-soft-concrete-1: rgba(241, 241, 241, 0.08);
+  --c-soft-concrete-6: rgba(241, 241, 241, 0.25);
+}
+
 @layer base {
   body {
     background-color: #000000;
@@ -7,6 +19,250 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     overflow-x: hidden;
     user-select: none;
+  }
+}
+
+/* ================= EXACT NABILISSA.COM STYLES ================= */
+.cursor-canvas {
+  display: block;
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  width: 100%;
+  z-index: 100000;
+}
+
+@media (max-width: 1279px) {
+  .cursor-canvas {
+    display: none;
+  }
+}
+
+.animation-container {
+  display: flex;
+  height: 100%;
+  text-align: center;
+  transition: color .6s var(--default-ease);
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.btn {
+  cursor: pointer;
+  display: inline-flex;
+  height: 2.75rem;
+  padding: 0 var(--20);
+  transition: transform .6s var(--default-ease);
+  transition-delay: .3s;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.btn-decor {
+  align-items: center;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  background: var(--c-soft-concrete-1);
+  border: .0625rem solid var(--c-soft-concrete-6);
+  border-radius: 62.4375rem;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: width .6s var(--default-ease) .3s, transform .6s var(--default-ease) .3s, background .6s var(--default-ease), border-color .6s var(--default-ease);
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .btn-decor {
+    border: 1px solid var(--c-soft-concrete-6);
+  }
+}
+
+.btn-decor:after {
+  background: var(--c-soft-concrete);
+  border-radius: 62.4375rem;
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: scale(0);
+  transition: transform .6s var(--default-ease) 0s, background .6s var(--default-ease);
+  width: 100%;
+}
+
+.btn-decor svg {
+  opacity: 0;
+  position: relative;
+  transform: rotate(-45deg);
+  transition: transform .4s var(--default-ease) 0s, opacity .4s var(--default-ease) 0s;
+  width: .75rem;
+  height: .75rem;
+  z-index: 2;
+}
+
+.btn-decor svg path {
+  transition: transform .6s var(--default-ease);
+  fill: #0B0B0B;
+}
+
+.btn-text {
+  transition: transform .6s var(--default-ease) .3s;
+  display: block;
+}
+
+.btn-text:nth-child(2) {
+  left: 0;
+  position: absolute;
+  top: 100%;
+  padding-top: 0.25rem;
+}
+
+.btn-wrap {
+  overflow: hidden;
+  position: relative;
+  height: 1.25rem;
+  line-height: 1.25rem;
+  transition: transform .6s var(--default-ease) .3s;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    transform: translate(1.25rem);
+    transition-delay: 0s;
+  }
+
+  .btn:hover .btn-text {
+    transform: translateY(-100%);
+    transition-delay: 0s;
+  }
+
+  .btn:hover .btn-decor {
+    transform: translate(-1.25rem);
+    transition-delay: 0s;
+    width: 2.75rem;
+  }
+
+  .btn:hover svg {
+    opacity: 1;
+    transform: rotate(0);
+    transition-delay: .5s;
+  }
+
+  .btn:hover .btn-decor:after {
+    transform: scale(1);
+    transition-delay: .3s;
+  }
+
+  .btn:hover .btn-wrap {
+    transform: translate(var(--20));
+    transition-delay: 0s;
+  }
+}
+
+.animation-container.black {
+  color: #ffffff;
+}
+
+.animation-container.black .btn-decor {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.animation-container.black .btn-decor:after {
+  background: #ffffff;
+}
+
+.animation-container.black .btn-decor svg path {
+  fill: #0B0B0B;
+}
+
+/* Preloader logo styling */
+.preloader-logo {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 25rem;
+  max-width: 85vw;
+}
+
+@media (max-width: 1023px) {
+  .preloader-logo {
+    width: 18rem;
+  }
+}
+
+/* SVG logo stroke animation */
+.uratro-svg path {
+  stroke-dasharray: 2200;
+  stroke-dashoffset: 2200;
+  stroke: #ffffff;
+  stroke-width: 1.2px;
+  fill: rgba(255, 255, 255, 0);
+  animation: drawUratro 2.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes drawUratro {
+  0% {
+    stroke-dashoffset: 2200;
+    fill: rgba(255, 255, 255, 0);
+  }
+  70% {
+    stroke-dashoffset: 0;
+    fill: rgba(255, 255, 255, 0);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    fill: rgba(255, 255, 255, 1);
+  }
+}
+
+/* Exact Nabil Issa 3-panel architectural shutter slits */
+.hero-img-panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform: translateY(100%);
+}
+
+.hero-img-1 {
+  clip-path: polygon(22.8125rem 24%, 36.75rem 24%, 36.75rem 76%, 22.8125rem 76%);
+}
+
+@media (max-width: 1023px) {
+  .hero-img-1 {
+    clip-path: polygon(22.5% 0, 77.5% 0, 77.5% 100%, 22.5% 100%);
+  }
+}
+
+.hero-img-2 {
+  clip-path: polygon(38rem 24%, 51.9375rem 24%, 51.9375rem 76%, 38rem 76%);
+}
+
+@media (max-width: 1023px) {
+  .hero-img-2 {
+    display: none;
+  }
+}
+
+.hero-img-3 {
+  clip-path: polygon(53.1875rem 24%, 67.125rem 24%, 67.125rem 76%, 53.1875rem 76%);
+}
+
+@media (max-width: 1023px) {
+  .hero-img-3 {
+    display: none;
   }
 }
 

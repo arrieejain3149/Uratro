@@ -11,6 +11,7 @@ import IncidentsTab from './components/tabs/IncidentsTab';
 import SimulatorTab from './components/tabs/SimulatorTab';
 import DispatchModal from './components/DispatchModal';
 import IntroLoader from './components/IntroLoader';
+import CursorCanvas from './components/CursorCanvas';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('index');
@@ -63,6 +64,9 @@ export default function App() {
       {/* Visual CRT & Dither Texture Overlay */}
       <div className="absolute inset-0 z-30 crt-overlay pointer-events-none opacity-40"></div>
       <div className="absolute inset-0 z-10 dither-pattern pointer-events-none opacity-20"></div>
+
+      {/* Exact Nabil Issa Fluid Cursor Ribbon Trail */}
+      <CursorCanvas />
 
       {/* Main Content Area */}
       <main className="relative w-full h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] overflow-hidden">

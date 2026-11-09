@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useProgress } from '@react-three/drei';
 import gsap from 'gsap';
 
@@ -8,164 +8,119 @@ interface IntroLoaderProps {
 
 export default function IntroLoader({ onIntroComplete }: IntroLoaderProps) {
   const { progress: modelProgress, active } = useProgress();
-  const [displayProgress, setDisplayProgress] = useState(0);
-  const [statusText, setStatusText] = useState('INITIALIZING TRANSIT ARCHITECTURE');
-  const [isDone, setIsDone] = useState(false);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLImageElement>(null);
-  const textWrapRef = useRef<HTMLDivElement>(null);
-  const counterRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+  const preloaderWrapRef = useRef<HTMLDivElement>(null);
+  const logoBoxRef = useRef<HTMLDivElement>(null);
+  const shutterWrapRef = useRef<HTMLDivElement>(null);
+  const shutter1Ref = useRef<HTMLDivElement>(null);
+  const shutter2Ref = useRef<HTMLDivElement>(null);
+  const shutter3Ref = useRef<HTMLDivElement>(null);
 
-  // Smooth numeric counter interpolator
   useEffect(() => {
-    // Ensure minimum visual duration of ~3.2 seconds for cinematic feel,
-    // while strictly waiting for the real 3D model to be 100% loaded.
-    let startTime = performance.now();
-    const minDuration = 3200; // ms
+    // Start initial state
+    let isMounted = true;
+    const startTime = performance.now();
+    const minLogoDrawTime = 2500; // Exact time for stroke draw to finish serenely
 
-    const interval = setInterval(() => {
+    // Check when 3D model is loaded AND logo has finished its serene draw
+    const checkReady = setInterval(() => {
       const elapsed = performance.now() - startTime;
-      const timeRatio = Math.min(1, elapsed / minDuration);
-      
-      // Calculate effective progress: real 3D model progress weighted with time
-      const target = Math.min(100, Math.max(Math.round(timeRatio * 90), Math.round(modelProgress)));
+      const modelReady = !active && (modelProgress >= 100 || modelProgress === 0);
 
-      setDisplayProgress(prev => {
-        if (prev < target) {
-          const next = prev + 1;
-          
-          if (next < 25) {
-            setStatusText('INITIALIZING TRANSIT ARCHITECTURE');
-          } else if (next < 60) {
-            setStatusText('PRELOADING 3D ROLLING STOCK (20.2 MB)');
-          } else if (next < 90) {
-            setStatusText('SYNCHRONIZING ORBITAL DIGITAL TWIN');
-          } else if (next < 100) {
-            setStatusText('FINALIZING TELEMETRY STREAM');
-          } else {
-            setStatusText('SYSTEM ONLINE // READY');
-          }
-          return next;
-        }
-        return prev;
-      });
-
-      // When both real model is done AND min duration passed
-      if (!active && modelProgress >= 100 && elapsed >= minDuration) {
-        setDisplayProgress(100);
-        setStatusText('SYSTEM ONLINE // READY');
-        clearInterval(interval);
+      // Once model is ready and min draw time elapsed, trigger Nabil Issa outro
+      if (modelReady && elapsed >= minLogoDrawTime && !animationStarted && isMounted) {
+        clearInterval(checkReady);
+        setAnimationStarted(true);
+        triggerNabilIssaOutro();
       }
-    }, 28);
+    }, 50);
 
-    return () => clearInterval(interval);
-  }, [modelProgress, active]);
+    return () => {
+      isMounted = false;
+      clearInterval(checkReady);
+    };
+  }, [active, modelProgress, animationStarted]);
 
-  // When displayProgress hits 100%, trigger the exact Nabil Issa outro sequence
-  useEffect(() => {
-    if (displayProgress < 100 || isDone) return;
-    setIsDone(true);
-
+  const triggerNabilIssaOutro = () => {
     const tl = gsap.timeline({
-      delay: 0.25,
       onComplete: () => {
         if (onIntroComplete) onIntroComplete();
       }
     });
 
-    // 1. Logo blurs and lifts gently
-    tl.to(logoRef.current, {
-      filter: 'blur(10px)',
+    // 1. Logo gently blurs and dissolves (exact nabilissa.com: blur(5px), autoAlpha: 0, duration: 1)
+    tl.to(logoBoxRef.current, {
+      filter: 'blur(6px)',
       opacity: 0,
-      y: -15,
-      scale: 1.04,
-      duration: 0.9,
+      scale: 1.03,
+      duration: 1.0,
       ease: 'power4.inOut'
     });
 
-    // 2. Subtitle & counter fade out simultaneously
-    tl.to([textWrapRef.current, counterRef.current, lineRef.current], {
-      opacity: 0,
-      y: 10,
-      duration: 0.7,
-      ease: 'power3.inOut'
-    }, '<0.1');
+    // 2. The 3 architectural shutter panels rise up and expand
+    tl.set(shutterWrapRef.current, { display: 'block' }, '<');
 
-    // 3. The entire curtain lifts / dissolves with luxury ease
-    tl.to(containerRef.current, {
-      yPercent: -100,
+    tl.to([shutter1Ref.current, shutter2Ref.current, shutter3Ref.current], {
+      y: 0,
+      stagger: 0.1,
+      duration: 1.4,
+      ease: 'power4.inOut'
+    }, '<');
+
+    // 3. Shutter panels clip-path expands to reveal the full underlying viewport
+    tl.to([shutter1Ref.current, shutter2Ref.current, shutter3Ref.current], {
+      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
       duration: 1.2,
-      ease: 'power4.inOut',
-      pointerEvents: 'none'
-    }, '-=0.4');
+      ease: 'power4.inOut'
+    }, '<0.4');
 
-  }, [displayProgress, isDone, onIntroComplete]);
+    // 4. Fade entire preloader wrapper to reveal the ready 3D canvas and HUD
+    tl.to(preloaderWrapRef.current, {
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.inOut',
+      pointerEvents: 'none'
+    }, '-=0.3');
+  };
 
   return (
     <div
-      ref={containerRef}
-      className="fixed inset-0 z-[100] bg-black flex flex-col justify-between items-center p-6 sm:p-12 select-none overflow-hidden"
-      style={{
-        background: 'radial-gradient(circle at 50% 50%, rgba(20, 20, 25, 0.9) 0%, #000000 80%)'
-      }}
+      ref={preloaderWrapRef}
+      className="fixed inset-0 z-[1000] bg-[#0B0B0B] pointer-events-auto select-none overflow-hidden"
     >
-      {/* Top subtle branding index */}
-      <div className="w-full flex justify-between items-center text-[10px] sm:text-[11px] font-mono tracking-[0.3em] text-neutral-500 uppercase">
-        <span>URATRO.SYS // VER 2.0</span>
-        <span>DELUXE MINIMALISM</span>
+      {/* ================= STAGE 1: EXACT NABILISSA CENTER PRELOADER LOGO ================= */}
+      {/* Pure, quiet, deluxe minimalism. Zero progress bars, zero percentages. */}
+      <div
+        ref={logoBoxRef}
+        className="preloader-logo flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 411 109"
+          className="uratro-svg w-full h-auto filter drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+        >
+          <path
+            d="M 190 65 L 182 65 L 173 67 L 168 69 L 162 73 L 159 76 L 156 81 L 155 85 L 155 94 L 156 98 L 158 101 L 162 105 L 169 108 L 181 108 L 190 104 L 192 101 L 188 103 L 182 103 L 180 102 L 177 99 L 174 90 L 174 85 L 176 78 L 178 74 L 185 67 Z M 183 36 L 168 36 L 165 34 L 163 34 L 164 51 L 163 58 L 162 59 L 162 63 L 166 54 L 172 45 L 177 40 Z M 373 33 L 377 35 L 383 41 L 387 49 L 390 62 L 391 71 L 390 83 L 387 95 L 383 102 L 378 107 L 376 108 L 381 108 L 388 106 L 394 103 L 397 101 L 402 96 L 404 93 L 409 82 L 410 76 L 410 65 L 408 56 L 404 48 L 399 42 L 398 42 L 395 39 L 388 35 L 379 33 Z M 362 33 L 354 35 L 345 40 L 340 45 L 336 51 L 333 58 L 332 62 L 332 80 L 334 86 L 337 92 L 339 95 L 345 101 L 348 103 L 357 107 L 361 108 L 368 108 L 364 106 L 361 103 L 358 99 L 355 93 L 353 87 L 351 72 L 351 63 L 353 50 L 355 45 L 358 40 L 363 35 L 366 33 Z M 299 33 L 296 33 L 293 35 L 283 38 L 275 39 L 271 41 L 273 42 L 275 42 L 280 47 L 281 51 L 281 97 L 279 102 L 275 106 L 272 107 L 309 107 L 306 106 L 301 101 L 299 96 Z M 191 34 L 194 35 L 196 37 L 198 43 L 197 73 L 197 96 L 198 100 L 200 104 L 202 106 L 206 108 L 217 108 L 225 105 L 228 102 L 226 103 L 222 103 L 220 102 L 217 99 L 216 96 L 216 48 L 215 44 L 212 38 L 210 36 L 204 33 Z M 124 33 L 121 33 L 118 35 L 108 38 L 100 39 L 96 41 L 98 42 L 100 42 L 104 46 L 106 51 L 106 97 L 104 102 L 100 106 L 97 107 L 134 107 L 131 106 L 126 101 L 124 96 Z M 321 32 L 316 33 L 314 34 L 308 40 L 305 46 L 304 49 L 304 52 L 306 48 L 310 45 L 312 45 L 314 46 L 316 48 L 317 48 L 320 52 L 322 57 L 323 62 L 325 58 L 327 50 L 331 42 L 332 39 L 332 36 L 328 34 Z M 146 32 L 141 33 L 139 34 L 133 40 L 130 46 L 129 49 L 129 52 L 135 45 L 138 45 L 143 49 L 147 57 L 148 62 L 149 58 L 152 52 L 154 45 L 157 40 L 157 36 L 153 34 Z M 253 9 L 252 13 L 248 20 L 242 27 L 241 27 L 238 30 L 234 32 L 226 34 L 229 35 L 234 40 L 236 44 L 236 95 L 237 98 L 240 103 L 243 106 L 248 108 L 260 108 L 269 104 L 273 100 L 267 103 L 260 103 L 256 99 L 254 94 L 253 86 L 253 55 L 254 48 L 257 42 L 261 38 L 265 36 L 270 35 L 272 33 L 254 32 L 253 29 Z M 104 0 L 68 1 L 72 2 L 79 9 L 81 14 L 84 28 L 86 58 L 86 45 L 87 35 L 89 22 L 91 14 L 94 8 L 100 2 L 102 2 Z M 0 1 L 3 2 L 8 7 L 9 11 L 9 75 L 11 84 L 15 93 L 18 96 L 18 97 L 24 102 L 32 106 L 40 108 L 59 108 L 66 106 L 71 104 L 74 102 L 80 96 L 83 90 L 85 84 L 85 78 L 84 80 L 84 84 L 80 92 L 77 96 L 72 100 L 68 102 L 60 104 L 51 104 L 47 103 L 40 99 L 35 94 L 33 91 L 30 84 L 28 71 L 28 12 L 30 6 L 35 2 L 36 0 Z"
+            fillRule="evenodd"
+          />
+        </svg>
       </div>
 
-      {/* Centerpiece: The Uratro Serif Logo & Architectural Subtitle */}
-      <div className="flex flex-col items-center justify-center text-center my-auto px-4 max-w-2xl">
-        {/* Ambient backglow */}
-        <div className="relative flex items-center justify-center">
-          <div className="absolute -inset-10 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
-
-          <img
-            ref={logoRef}
-            src="/uratro-logo-clean.png"
-            alt="Uratro"
-            className="h-16 sm:h-24 md:h-28 w-auto object-contain filter drop-shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all"
-          />
-        </div>
-
-        {/* Nabil Issa style architectural question & identity */}
-        <div ref={textWrapRef} className="mt-6 space-y-2">
-          <h1 className="text-xs sm:text-sm md:text-base font-light tracking-[0.25em] text-neutral-300 font-sans uppercase">
-            Can data shape how cities move?
-          </h1>
-          <p className="text-[9px] sm:text-[10px] tracking-[0.35em] text-neutral-500 font-mono uppercase">
-            Autonomous Rapid Transit Operations // Digital Twin
-          </p>
-        </div>
-      </div>
-
-      {/* Bottom: Luxury Hairline Progress Line & Counter */}
-      <div ref={counterRef} className="w-full max-w-md flex flex-col gap-3 font-mono">
-        <div className="flex justify-between items-end text-xs tracking-widest">
-          <span className="text-[10px] text-neutral-500 uppercase">
-            {statusText}
-          </span>
-          <span className="text-sm font-light text-white font-mono">
-            {String(displayProgress).padStart(2, '0')}%
-          </span>
-        </div>
-
-        {/* Hairline Progress Track */}
-        <div className="w-full h-[1px] bg-neutral-900 relative overflow-hidden">
-          <div
-            ref={lineRef}
-            className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-neutral-500 via-white to-cyan-300 transition-all duration-150 ease-out"
-            style={{ width: `${displayProgress}%` }}
-          />
-        </div>
-
-        <div className="flex justify-between text-[8px] text-neutral-600 uppercase tracking-widest">
-          <span>JAIPUR METRO NETWORK</span>
-          <span>EST. 2026 // 3NF / BCNF</span>
-        </div>
+      {/* ================= STAGE 2: EXACT NABILISSA 3-SHUTTER ARCHITECTURAL EXPANSION ================= */}
+      <div ref={shutterWrapRef} className="absolute inset-0 pointer-events-none hidden">
+        <div
+          ref={shutter1Ref}
+          className="hero-img-panel hero-img-1 bg-[#101014] border-x border-white/5"
+        />
+        <div
+          ref={shutter2Ref}
+          className="hero-img-panel hero-img-2 bg-[#121218] border-x border-white/5"
+        />
+        <div
+          ref={shutter3Ref}
+          className="hero-img-panel hero-img-3 bg-[#101014] border-x border-white/5"
+        />
       </div>
     </div>
   );

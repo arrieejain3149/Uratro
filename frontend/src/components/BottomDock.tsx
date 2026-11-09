@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Moon, AlertTriangle } from 'lucide-react';
+import { Moon } from 'lucide-react';
+import NabilButton from './NabilButton';
 
 export type TabKey = 'index' | 'topology' | 'analytics' | 'fleet' | 'incidents' | 'simulator';
 
@@ -65,7 +66,7 @@ export default function BottomDock({ activeTab, onTabChange, onOpenDispatch }: B
         </div>
       </div>
 
-      {/* Right: Timezone, Clock, and High-Contrast Action Button */}
+      {/* Right: Timezone, Clock, and Exact Nabil Issa Action Button */}
       <div className="flex items-center gap-3 sm:gap-5 shrink-0 pl-2">
         <div className="hidden lg:flex items-center gap-1.5 text-neutral-400 text-xs">
           <Moon className="w-3.5 h-3.5 text-cyan-400" />
@@ -77,14 +78,12 @@ export default function BottomDock({ activeTab, onTabChange, onOpenDispatch }: B
           <span>{timeStr || '23:59:00'}</span>
         </div>
 
-        {/* High contrast action button */}
-        <button
+        {/* Exact Nabil Issa Animated Button */}
+        <NabilButton
+          text="DISPATCH ALERT"
           onClick={onOpenDispatch}
-          className="bg-white hover:bg-neutral-200 text-black px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-extrabold tracking-wider uppercase transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-lg"
-        >
-          <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
-          <span>DISPATCH ALERT +</span>
-        </button>
+          theme="black"
+        />
       </div>
     </footer>
   );
