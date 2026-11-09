@@ -10,11 +10,13 @@ import FleetTab from './components/tabs/FleetTab';
 import IncidentsTab from './components/tabs/IncidentsTab';
 import SimulatorTab from './components/tabs/SimulatorTab';
 import DispatchModal from './components/DispatchModal';
+import IntroLoader from './components/IntroLoader';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('index');
   const [isDispatchOpen, setIsDispatchOpen] = useState(false);
   const [kpis, setKpis] = useState<any>(null);
+  const [showIntro, setShowIntro] = useState(true);
 
   // Mouse coords for 3D parallax & HUD
   const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -122,6 +124,11 @@ export default function App() {
         onClose={() => setIsDispatchOpen(false)}
         onSuccess={fetchKpis}
       />
+
+      {/* Deluxe Nabil Issa Style Intro & 3D Model Preloader */}
+      {showIntro && (
+        <IntroLoader onIntroComplete={() => setShowIntro(false)} />
+      )}
     </div>
   );
 }
