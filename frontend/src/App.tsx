@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import ThreeScene from './components/ThreeScene';
 import AtmosphereBackground from './components/AtmosphereBackground';
-import HudOverlay from './components/HudOverlay';
-import BottomDock from './components/BottomDock';
+import LeftSidebar from './components/LeftSidebar';
+import TopNavbar from './components/TopNavbar';
+import HeroOverlay from './components/HeroOverlay';
+import BottomEditorialBar from './components/BottomEditorialBar';
 import type { TabKey } from './components/BottomDock';
 import TopologyTab from './components/tabs/TopologyTab';
 import AnalyticsTab from './components/tabs/AnalyticsTab';
@@ -21,7 +23,6 @@ export default function App() {
 
   // Mouse coords for 3D parallax & HUD
   const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [mouseDisplay, setMouseDisplay] = useState<{ x: number; y: number }>({ x: 859, y: 889 });
 
   const fetchKpis = () => {
     fetch('/api/v1/analytics/kpis')
@@ -48,90 +49,113 @@ export default function App() {
     const normX = (clientX / innerWidth) * 2 - 1;
     const normY = -(clientY / innerHeight) * 2 + 1;
     mouseRef.current = { x: normX, y: normY };
-
-    // Screen pixel coordinates for the HUD readout
-    setMouseDisplay({ x: Math.round(clientX), y: Math.round(clientY) });
   };
+
+  const handleIntroComplete = useCallback(() => {
+    setShowIntro(false);
+  }, []);
 
   return (
     <div 
       onMouseMove={handleMouseMove}
-      className="relative w-screen h-screen bg-black overflow-hidden select-none font-mono text-white"
+      className="relative w-screen h-screen bg-[#121214] overflow-hidden select-none text-white font-sans"
     >
-      {/* Moving organic dark smoke / atmosphere (Replaces flat grid) */}
+      {/* Deep Cosmic Starfield Backdrop */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-40"
+        style={{ backgroundImage: "url('/starfield-bg.jpg')" }}
+      />
+      
+      {/* Cinematic Studio Radial Vignette & Warm Charcoal Mask */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(26,26,30,0.1)_0%,rgba(18,18,20,0.8)_65%,#121214_100%)] pointer-events-none" />
+
+      {/* Moving organic dark smoke / atmospheric ambient nebula */}
       <AtmosphereBackground />
 
-      {/* Visual CRT & Dither Texture Overlay */}
-      <div className="absolute inset-0 z-30 crt-overlay pointer-events-none opacity-40"></div>
-      <div className="absolute inset-0 z-10 dither-pattern pointer-events-none opacity-20"></div>
-
-      {/* Exact Nabil Issa Fluid Cursor Ribbon Trail */}
+      {/* Fluid Cursor Ribbon Trail */}
       <CursorCanvas />
 
+      {/* Slender Left Vertical Sidebar Strip with Hamburger Menu */}
+      <LeftSidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onOpenDispatch={() => setIsDispatchOpen(true)}
+      />
+
+      {/* Sleek Minimalist Top Navigation Bar */}
+      <TopNavbar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onOpenDispatch={() => setIsDispatchOpen(true)}
+      />
+
       {/* Main Content Area */}
-      <main className="relative w-full h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] overflow-hidden">
+      <main className="relative ml-14 sm:ml-16 w-[calc(100vw-3.5rem)] sm:w-[calc(100vw-4rem)] h-screen overflow-hidden">
         
-        {/* TAB 1: HERO LANDING (Exact replica of unbelievablycrap.com with Metro GLB) */}
+        {/* TAB 1: HERO OVERVIEW (3D Showcase with Aer-style Editorial Layout) */}
         {activeTab === 'index' && (
           <div className="w-full h-full relative">
             <ThreeScene mouse={mouseRef} />
-            <HudOverlay mouseCoords={mouseDisplay} kpis={kpis} />
+            <HeroOverlay 
+              onTabChange={setActiveTab} 
+              kpis={kpis}
+              mouse={mouseRef}
+            />
           </div>
         )}
 
-        {/* TAB 2: TOPOLOGY NETWORK */}
+        {/* TAB 2: METRO MAP (Topology) */}
         {activeTab === 'topology' && (
-          <div className="w-full h-full relative z-20">
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
             <TopologyTab />
           </div>
         )}
 
-        {/* TAB 3: DATA ANALYTICS COMMAND CENTER */}
+        {/* TAB 3: PASSENGER STATS (Analytics) */}
         {activeTab === 'analytics' && (
-          <div className="w-full h-full relative z-20">
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
             <AnalyticsTab />
           </div>
         )}
 
-        {/* TAB 4: FLEET & WORK ORDERS */}
+        {/* TAB 4: TRAIN FLEET */}
         {activeTab === 'fleet' && (
-          <div className="w-full h-full relative z-20">
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
             <FleetTab />
           </div>
         )}
 
-        {/* TAB 5: INCIDENT ISA HIERARCHY */}
+        {/* TAB 5: SAFETY & ALERTS (Incidents) */}
         {activeTab === 'incidents' && (
-          <div className="w-full h-full relative z-20">
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
             <IncidentsTab />
           </div>
         )}
 
-        {/* TAB 6: TURNSTILE COMMUTER SIMULATOR */}
+        {/* TAB 6: TICKET GATES (Simulator) */}
         {activeTab === 'simulator' && (
-          <div className="w-full h-full relative z-20">
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
             <SimulatorTab />
           </div>
         )}
       </main>
 
-      {/* The Bottom Dock (Exact spatial match with unbelievablycrap.com) */}
-      <BottomDock 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab}
-        onOpenDispatch={() => setIsDispatchOpen(true)}
+      {/* Bottom Editorial Magazine Bar */}
+      <BottomEditorialBar 
+        onTabChange={setActiveTab} 
+        kpis={kpis}
       />
 
-      {/* Emergency Tactical Dispatch Modal */}
+      {/* Report Incident Modal */}
       <DispatchModal
         isOpen={isDispatchOpen}
         onClose={() => setIsDispatchOpen(false)}
         onSuccess={fetchKpis}
       />
 
-      {/* Deluxe Nabil Issa Style Intro & 3D Model Preloader */}
+      {/* Deluxe Smooth Intro Preloader */}
       {showIntro && (
-        <IntroLoader onIntroComplete={() => setShowIntro(false)} />
+        <IntroLoader onIntroComplete={handleIntroComplete} />
       )}
     </div>
   );

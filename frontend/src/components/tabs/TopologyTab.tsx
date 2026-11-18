@@ -39,45 +39,45 @@ export default function TopologyTab() {
   }, []);
 
   return (
-    <div className="w-full h-full p-4 sm:p-8 flex flex-col gap-6 overflow-y-auto font-mono">
+    <div className="w-full h-full p-4 sm:p-8 flex flex-col gap-6 overflow-y-auto font-sans">
       {/* Header telemetry tag */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-neutral-800 gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#27272A] gap-2">
         <div>
-          <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold tracking-widest uppercase">
+          <div className="flex items-center gap-2 text-[#C5A880] text-xs font-bold tracking-widest uppercase font-mono">
             <Radio className="w-4 h-4 animate-pulse" />
-            <span>TOPOLOGY NETWORK // 2D SCHEMATIC RAIL MAP</span>
+            <span>METRO NETWORK // STATIONS &amp; ROUTES MAP</span>
           </div>
           <p className="text-xs text-neutral-400 mt-1">
-            Real-time multi-line junction routing, stop sequences, and station operational health.
+            Live interactive map of metro lines, station stops, transfer junctions, and station status.
           </p>
         </div>
-        <div className="flex items-center gap-4 text-xs">
-          <span className="flex items-center gap-1.5 text-pink-400">
+        <div className="flex items-center gap-4 text-xs font-medium">
+          <span className="flex items-center gap-1.5 text-pink-300">
             <span className="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
             Pink Line (East-West)
           </span>
-          <span className="flex items-center gap-1.5 text-blue-400">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-            Blue Line (Connector)
+          <span className="flex items-center gap-1.5 text-[#C5A880]">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C5A880]"></span>
+            Blue Line (North-South)
           </span>
         </div>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center h-64 text-neutral-500 text-sm">
-          Loading Transit Schematic...
+          Loading Metro Map...
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Schematic Diagram Area */}
-          <div className="lg:col-span-2 bg-[#0c0d12]/90 border border-neutral-800 rounded-sm p-6 relative overflow-x-auto">
+          <div className="lg:col-span-2 bg-[#18181B]/95 border border-[#27272A] rounded-sm p-6 relative overflow-x-auto shadow-lg">
             <div className="min-w-[650px] py-8 space-y-12">
               
               {/* Pink Line Track */}
               <div>
                 <div className="flex items-center justify-between text-xs text-pink-400 font-bold mb-3 tracking-wider">
-                  <span>PINK LINE (CORRIDOR 1)</span>
-                  <span>10 STATIONS // OPERATIONAL</span>
+                  <span>PINK LINE (EAST-WEST)</span>
+                  <span>10 STATIONS // ALL OPEN</span>
                 </div>
                 
                 {/* Track Line */}
@@ -127,8 +127,8 @@ export default function TopologyTab() {
               {routes[1] && (
                 <div>
                   <div className="flex items-center justify-between text-xs text-blue-400 font-bold mb-3 tracking-wider">
-                    <span>BLUE LINE (NORTH-SOUTH CONNECTOR)</span>
-                    <span>INTERCHANGE JUNCTIONS</span>
+                    <span>BLUE LINE (NORTH-SOUTH)</span>
+                    <span>TRANSFER STATIONS</span>
                   </div>
 
                   <div className="relative flex items-center justify-around py-6 max-w-md">
@@ -167,15 +167,15 @@ export default function TopologyTab() {
           </div>
 
           {/* Selected Station Telemetry Card */}
-          <div className="bg-[#0c0d12]/90 border border-neutral-800 rounded-sm p-5 flex flex-col justify-between">
+          <div className="bg-[#18181B]/95 border border-[#27272A] rounded-sm p-6 flex flex-col justify-between shadow-lg">
             {selectedStation ? (
               <div className="space-y-4">
-                <div className="flex items-start justify-between border-b border-neutral-800 pb-3">
+                <div className="flex items-start justify-between border-b border-[#27272A] pb-3">
                   <div>
-                    <span className="text-[9px] text-cyan-400 tracking-widest uppercase">
-                      STATION TELEMETRY ID: #{selectedStation.Station_ID}
+                    <span className="text-[10px] text-[#C5A880] tracking-widest uppercase font-mono">
+                      STATION DETAILS: #{selectedStation.Station_ID}
                     </span>
-                    <h3 className="text-lg font-bold text-white mt-0.5">
+                    <h3 className="text-xl font-bold text-white mt-0.5">
                       {selectedStation.Name}
                     </h3>
                   </div>
@@ -186,50 +186,50 @@ export default function TopologyTab() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="bg-black/50 p-2.5 border border-neutral-900 rounded-xs">
-                    <span className="text-[9px] text-neutral-500 block uppercase">CLASSIFICATION</span>
+                  <div className="bg-[#121214] p-3 border border-[#27272A] rounded-xs">
+                    <span className="text-[9px] text-neutral-400 block uppercase">STATION TYPE</span>
                     <span className="text-neutral-200 font-semibold">{selectedStation.Type} Station</span>
                   </div>
 
-                  <div className="bg-black/50 p-2.5 border border-neutral-900 rounded-xs">
-                    <span className="text-[9px] text-neutral-500 block uppercase">STOP INDEX</span>
-                    <span className="text-neutral-200 font-semibold">Sequence #{selectedStation.Sequence_Number}</span>
+                  <div className="bg-[#121214] p-3 border border-[#27272A] rounded-xs">
+                    <span className="text-[9px] text-neutral-400 block uppercase">STOP NUMBER</span>
+                    <span className="text-neutral-200 font-semibold">Stop #{selectedStation.Sequence_Number}</span>
                   </div>
                 </div>
 
-                <div className="bg-black/50 p-2.5 border border-neutral-900 rounded-xs">
-                  <div className="flex items-center gap-1.5 text-[9px] text-neutral-500 uppercase mb-1">
-                    <MapPin className="w-3 h-3 text-cyan-400" />
-                    <span>GPS GIS Coordinates</span>
+                <div className="bg-[#121214] p-3 border border-[#27272A] rounded-xs">
+                  <div className="flex items-center gap-1.5 text-[9px] text-neutral-400 uppercase mb-1">
+                    <MapPin className="w-3 h-3 text-[#C5A880]" />
+                    <span>Location Coordinates</span>
                   </div>
                   <span className="text-neutral-300 font-mono text-xs">
                     {selectedStation.GPS_Coordinates || '26.8500° N, 75.7600° E'}
                   </span>
                 </div>
 
-                <div className="bg-cyan-950/20 border border-cyan-800/40 p-3 rounded-xs text-xs space-y-1">
+                <div className="bg-[#222226] border border-[#2E2E34] p-3.5 rounded-xs text-xs space-y-1.5">
                   <div className="flex justify-between text-neutral-400">
-                    <span>Average Dwell Time:</span>
+                    <span>Train Stop Duration:</span>
                     <span className="text-white font-bold">45 Seconds</span>
                   </div>
                   <div className="flex justify-between text-neutral-400">
-                    <span>Platform Gates:</span>
-                    <span className="text-white font-bold">8 Turnstiles Active</span>
+                    <span>Entry/Exit Gates:</span>
+                    <span className="text-white font-bold">8 Gates Open</span>
                   </div>
                   <div className="flex justify-between text-neutral-400">
-                    <span>Peak Hour Surge:</span>
-                    <span className="text-amber-400 font-bold">08:30 - 10:30 AM</span>
+                    <span>Busiest Hours:</span>
+                    <span className="text-[#C5A880] font-bold">08:30 - 10:30 AM</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="text-neutral-500 text-xs text-center py-12">
-                Select a station node from the schematic to view telemetry.
+              <div className="text-neutral-400 text-xs text-center py-12">
+                Click any station on the map above to view details.
               </div>
             )}
 
-            <div className="text-[9px] text-neutral-600 pt-4 border-t border-neutral-900 text-center uppercase tracking-widest">
-              URATRO // RELATIONAL TOPOLOGY JUNCTION ENGINE
+            <div className="text-[9px] text-neutral-400 pt-4 border-t border-[#27272A] text-center uppercase tracking-widest font-mono">
+              URATRO // LIVE NETWORK MONITOR
             </div>
           </div>
         </div>

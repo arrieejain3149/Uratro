@@ -54,7 +54,6 @@ export default function ThreeScene({ mouse }: { mouse: MutableRefObject<{ x: num
         camera={{ position: [2.8, 1.2, 4.4], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
       >
-        <color attach="background" args={['#000000']} />
         
         {/* Full 360-degree drag rotation & zoom inspection */}
         <OrbitControls 
@@ -69,13 +68,13 @@ export default function ThreeScene({ mouse }: { mouse: MutableRefObject<{ x: num
           maxPolarAngle={Math.PI / 1.8}
         />
 
-        {/* Industrial high-contrast lighting */}
-        <ambientLight intensity={1.1} />
-        <directionalLight position={[6, 10, 6]} intensity={3.0} color="#ffffff" />
-        <directionalLight position={[-8, -2, -5]} intensity={1.8} color="#00f0ff" />
-        <pointLight position={[0, 4, 3]} intensity={2.2} color="#ffffff" />
-        <pointLight position={[-4, 1, 3]} intensity={1.5} color="#3b82f6" />
-        <pointLight position={[4, -1, -3]} intensity={1.2} color="#93c5fd" />
+        {/* Aer luxury studio softbox lighting */}
+        <ambientLight intensity={1.2} color="#fbfbfb" />
+        <directionalLight position={[6, 10, 6]} intensity={3.2} color="#fbf9f4" />
+        <directionalLight position={[-8, 4, -4]} intensity={1.8} color="#e5ded2" />
+        <pointLight position={[0, 4, 3]} intensity={2.0} color="#f5eedc" />
+        <pointLight position={[-4, 1, 3]} intensity={1.2} color="#d4c2a5" />
+        <pointLight position={[4, -1, -3]} intensity={1.0} color="#baa588" />
 
         <Suspense fallback={<LoadingFallback />}>
           <MetroModel mouse={mouse} />

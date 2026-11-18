@@ -4,21 +4,33 @@
   --default-ease: cubic-bezier(.25, 1, .5, 1);
   --20: 1.25rem;
   --40: 2.5rem;
-  --c-obsidian-dust: #0B0B0B;
-  --c-obsidian-dust-1: rgba(255, 255, 255, 0.08);
-  --c-obsidian-dust-6: rgba(255, 255, 255, 0.22);
-  --c-soft-concrete: #F1F1F1;
-  --c-soft-concrete-1: rgba(241, 241, 241, 0.08);
-  --c-soft-concrete-6: rgba(241, 241, 241, 0.25);
+  --c-obsidian-dust: #121214;
+  --c-obsidian-dust-1: rgba(255, 255, 255, 0.05);
+  --c-obsidian-dust-6: rgba(255, 255, 255, 0.15);
+  --c-soft-concrete: #F4F4F5;
+  --c-soft-concrete-1: rgba(244, 244, 245, 0.06);
+  --c-soft-concrete-6: rgba(244, 244, 245, 0.20);
+  
+  /* Aer Luxury Palette Tokens */
+  --c-aer-bg: #121214;
+  --c-aer-surface: #18181B;
+  --c-aer-elevated: #222226;
+  --c-aer-border: #27272A;
+  --c-aer-gold: #C5A880;
+  --c-aer-gold-hover: #D8BA92;
+  --c-aer-gold-muted: rgba(197, 168, 128, 0.15);
+  --c-aer-text-muted: #8E8E93;
 }
 
 @layer base {
   body {
-    background-color: #000000;
+    background-color: #121214;
     color: #ffffff;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     overflow-x: hidden;
     user-select: none;
+    selection-background-color: #C5A880;
+    selection-color: #121214;
   }
 }
 
@@ -228,45 +240,7 @@
   }
 }
 
-/* Exact Nabil Issa 3-panel architectural shutter slits */
-.hero-img-panel {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  transform: translateY(100%);
-}
-
-.hero-img-1 {
-  clip-path: polygon(22.8125rem 24%, 36.75rem 24%, 36.75rem 76%, 22.8125rem 76%);
-}
-
-@media (max-width: 1023px) {
-  .hero-img-1 {
-    clip-path: polygon(22.5% 0, 77.5% 0, 77.5% 100%, 22.5% 100%);
-  }
-}
-
-.hero-img-2 {
-  clip-path: polygon(38rem 24%, 51.9375rem 24%, 51.9375rem 76%, 38rem 76%);
-}
-
-@media (max-width: 1023px) {
-  .hero-img-2 {
-    display: none;
-  }
-}
-
-.hero-img-3 {
-  clip-path: polygon(53.1875rem 24%, 67.125rem 24%, 67.125rem 76%, 53.1875rem 76%);
-}
-
-@media (max-width: 1023px) {
-  .hero-img-3 {
-    display: none;
-  }
-}
-
-/* Custom CRT scanlines overlay */
+/* CRT scanlines overlay */
 .crt-overlay {
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 

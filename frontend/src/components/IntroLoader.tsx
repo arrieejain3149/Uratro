@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
-import { useProgress } from '@react-three/drei';
+import { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 
 interface IntroLoaderProps {
@@ -7,120 +6,201 @@ interface IntroLoaderProps {
 }
 
 export default function IntroLoader({ onIntroComplete }: IntroLoaderProps) {
-  const { progress: modelProgress, active } = useProgress();
-  const [animationStarted, setAnimationStarted] = useState(false);
+  const isFinishedRef = useRef(false);
+  const onIntroCompleteRef = useRef(onIntroComplete);
+  onIntroCompleteRef.current = onIntroComplete;
 
-  const preloaderWrapRef = useRef<HTMLDivElement>(null);
-  const logoBoxRef = useRef<HTMLDivElement>(null);
-  const shutterWrapRef = useRef<HTMLDivElement>(null);
-  const shutter1Ref = useRef<HTMLDivElement>(null);
-  const shutter2Ref = useRef<HTMLDivElement>(null);
-  const shutter3Ref = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const uratroBrandRef = useRef<HTMLDivElement>(null);
+  const emblemRef = useRef<HTMLDivElement>(null);
+  const uraRef = useRef<HTMLSpanElement>(null);
+  const dividerRef = useRef<HTMLSpanElement>(null);
+  const troRef = useRef<HTMLSpanElement>(null);
+  const masterTimelineRef = useRef<gsap.core.Timeline | null>(null);
+
+  // Smooth exit transition that lifts the curtain into the live homepage
+  const finishAndRevealHomepage = useCallback(() => {
+    if (isFinishedRef.current) return;
+    isFinishedRef.current = true;
+
+    if (masterTimelineRef.current) {
+      masterTimelineRef.current.kill();
+    }
+
+    const exitTl = gsap.timeline({
+      onComplete: () => {
+        if (onIntroCompleteRef.current) {
+          onIntroCompleteRef.current();
+        }
+      }
+    });
+
+    // 1. Brand logo softly dissolves and blurs
+    exitTl.to(uratroBrandRef.current, {
+      opacity: 0,
+      scale: 0.95,
+      filter: 'blur(10px)',
+      duration: 0.4,
+      ease: 'power2.inOut'
+    });
+
+    // 2. The black curtain slides up smoothly revealing the live Uratro homepage
+    exitTl.to(
+      wrapRef.current,
+      {
+        yPercent: -100,
+        duration: 0.8,
+        ease: 'power3.inOut'
+      },
+      '-=0.15'
+    );
+  }, []);
 
   useEffect(() => {
-    // Start initial state
-    let isMounted = true;
-    const startTime = performance.now();
-    const minLogoDrawTime = 2500; // Exact time for stroke draw to finish serenely
+    if (!wrapRef.current || !uratroBrandRef.current) return;
 
-    // Check when 3D model is loaded AND logo has finished its serene draw
-    const checkReady = setInterval(() => {
-      const elapsed = performance.now() - startTime;
-      const modelReady = !active && (modelProgress >= 100 || modelProgress === 0);
+    const ctx = gsap.context(() => {
+      // Set initial states (matching inline styles)
+      gsap.set(uratroBrandRef.current, { opacity: 0 });
+      gsap.set(emblemRef.current, { scale: 0.88, opacity: 0, filter: 'blur(8px)' });
+      gsap.set(uraRef.current, { opacity: 0, x: -16, filter: 'blur(4px)' });
+      gsap.set(dividerRef.current, { scaleY: 0, opacity: 0 });
+      gsap.set(troRef.current, { opacity: 0, x: 16, filter: 'blur(4px)' });
 
-      // Once model is ready and min draw time elapsed, trigger Nabil Issa outro
-      if (modelReady && elapsed >= minLogoDrawTime && !animationStarted && isMounted) {
-        clearInterval(checkReady);
-        setAnimationStarted(true);
-        triggerNabilIssaOutro();
-      }
-    }, 50);
+      const tl = gsap.timeline();
+      masterTimelineRef.current = tl;
+
+      // Step 1: Fade in the brand container
+      tl.to(uratroBrandRef.current, {
+        opacity: 1,
+        duration: 0.35,
+        delay: 0.15,
+        ease: 'power2.out'
+      });
+
+      // Step 2: Emblem scales in and unblurs
+      tl.to(
+        emblemRef.current,
+        {
+          scale: 1,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 0.7,
+          ease: 'power3.out'
+        },
+        '<'
+      );
+
+      // Step 3: 'URA' slides in smoothly
+      tl.to(
+        uraRef.current,
+        {
+          opacity: 1,
+          x: 0,
+          filter: 'blur(0px)',
+          duration: 0.55,
+          ease: 'power3.out'
+        },
+        '-=0.25'
+      );
+
+      // Step 4: Vertical separator bar '|' expands
+      tl.to(
+        dividerRef.current,
+        {
+          scaleY: 1,
+          opacity: 1,
+          duration: 0.35,
+          ease: 'power2.out'
+        },
+        '-=0.3'
+      );
+
+      // Step 5: 'TRO' slides in smoothly
+      tl.to(
+        troRef.current,
+        {
+          opacity: 1,
+          x: 0,
+          filter: 'blur(0px)',
+          duration: 0.55,
+          ease: 'power3.out'
+        },
+        '-=0.25'
+      );
+
+      // Step 6: Calm hold so the full logo is appreciated
+      tl.to({}, { duration: 1.1 });
+
+      // Step 7: Transition to homepage
+      tl.add(() => {
+        finishAndRevealHomepage();
+      });
+    }, wrapRef);
+
+    // Failsafe timer so it NEVER gets stuck
+    const failsafe = setTimeout(() => {
+      finishAndRevealHomepage();
+    }, 4500);
 
     return () => {
-      isMounted = false;
-      clearInterval(checkReady);
+      clearTimeout(failsafe);
+      ctx.revert();
     };
-  }, [active, modelProgress, animationStarted]);
-
-  const triggerNabilIssaOutro = () => {
-    const tl = gsap.timeline({
-      onComplete: () => {
-        if (onIntroComplete) onIntroComplete();
-      }
-    });
-
-    // 1. Logo gently blurs and dissolves (exact nabilissa.com: blur(5px), autoAlpha: 0, duration: 1)
-    tl.to(logoBoxRef.current, {
-      filter: 'blur(6px)',
-      opacity: 0,
-      scale: 1.03,
-      duration: 1.0,
-      ease: 'power4.inOut'
-    });
-
-    // 2. The 3 architectural shutter panels rise up and expand
-    tl.set(shutterWrapRef.current, { display: 'block' }, '<');
-
-    tl.to([shutter1Ref.current, shutter2Ref.current, shutter3Ref.current], {
-      y: 0,
-      stagger: 0.1,
-      duration: 1.4,
-      ease: 'power4.inOut'
-    }, '<');
-
-    // 3. Shutter panels clip-path expands to reveal the full underlying viewport
-    tl.to([shutter1Ref.current, shutter2Ref.current, shutter3Ref.current], {
-      clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-      duration: 1.2,
-      ease: 'power4.inOut'
-    }, '<0.4');
-
-    // 4. Fade entire preloader wrapper to reveal the ready 3D canvas and HUD
-    tl.to(preloaderWrapRef.current, {
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power2.inOut',
-      pointerEvents: 'none'
-    }, '-=0.3');
-  };
+  }, [finishAndRevealHomepage]);
 
   return (
     <div
-      ref={preloaderWrapRef}
-      className="fixed inset-0 z-[1000] bg-[#0B0B0B] pointer-events-auto select-none overflow-hidden"
+      ref={wrapRef}
+      onClick={finishAndRevealHomepage}
+      className="fixed inset-0 z-[99999] bg-[#0B0B0B] pointer-events-auto select-none overflow-hidden flex items-center justify-center cursor-pointer will-change-transform"
+      title="Click to skip intro"
     >
-      {/* ================= STAGE 1: EXACT NABILISSA CENTER PRELOADER LOGO ================= */}
-      {/* Pure, quiet, deluxe minimalism. Zero progress bars, zero percentages. */}
       <div
-        ref={logoBoxRef}
-        className="preloader-logo flex items-center justify-center"
+        ref={uratroBrandRef}
+        style={{ opacity: 0 }}
+        className="flex items-center justify-center pointer-events-none will-change-transform"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 411 109"
-          className="uratro-svg w-full h-auto filter drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-        >
-          <path
-            d="M 190 65 L 182 65 L 173 67 L 168 69 L 162 73 L 159 76 L 156 81 L 155 85 L 155 94 L 156 98 L 158 101 L 162 105 L 169 108 L 181 108 L 190 104 L 192 101 L 188 103 L 182 103 L 180 102 L 177 99 L 174 90 L 174 85 L 176 78 L 178 74 L 185 67 Z M 183 36 L 168 36 L 165 34 L 163 34 L 164 51 L 163 58 L 162 59 L 162 63 L 166 54 L 172 45 L 177 40 Z M 373 33 L 377 35 L 383 41 L 387 49 L 390 62 L 391 71 L 390 83 L 387 95 L 383 102 L 378 107 L 376 108 L 381 108 L 388 106 L 394 103 L 397 101 L 402 96 L 404 93 L 409 82 L 410 76 L 410 65 L 408 56 L 404 48 L 399 42 L 398 42 L 395 39 L 388 35 L 379 33 Z M 362 33 L 354 35 L 345 40 L 340 45 L 336 51 L 333 58 L 332 62 L 332 80 L 334 86 L 337 92 L 339 95 L 345 101 L 348 103 L 357 107 L 361 108 L 368 108 L 364 106 L 361 103 L 358 99 L 355 93 L 353 87 L 351 72 L 351 63 L 353 50 L 355 45 L 358 40 L 363 35 L 366 33 Z M 299 33 L 296 33 L 293 35 L 283 38 L 275 39 L 271 41 L 273 42 L 275 42 L 280 47 L 281 51 L 281 97 L 279 102 L 275 106 L 272 107 L 309 107 L 306 106 L 301 101 L 299 96 Z M 191 34 L 194 35 L 196 37 L 198 43 L 197 73 L 197 96 L 198 100 L 200 104 L 202 106 L 206 108 L 217 108 L 225 105 L 228 102 L 226 103 L 222 103 L 220 102 L 217 99 L 216 96 L 216 48 L 215 44 L 212 38 L 210 36 L 204 33 Z M 124 33 L 121 33 L 118 35 L 108 38 L 100 39 L 96 41 L 98 42 L 100 42 L 104 46 L 106 51 L 106 97 L 104 102 L 100 106 L 97 107 L 134 107 L 131 106 L 126 101 L 124 96 Z M 321 32 L 316 33 L 314 34 L 308 40 L 305 46 L 304 49 L 304 52 L 306 48 L 310 45 L 312 45 L 314 46 L 316 48 L 317 48 L 320 52 L 322 57 L 323 62 L 325 58 L 327 50 L 331 42 L 332 39 L 332 36 L 328 34 Z M 146 32 L 141 33 L 139 34 L 133 40 L 130 46 L 129 49 L 129 52 L 135 45 L 138 45 L 143 49 L 147 57 L 148 62 L 149 58 L 152 52 L 154 45 L 157 40 L 157 36 L 153 34 Z M 253 9 L 252 13 L 248 20 L 242 27 L 241 27 L 238 30 L 234 32 L 226 34 L 229 35 L 234 40 L 236 44 L 236 95 L 237 98 L 240 103 L 243 106 L 248 108 L 260 108 L 269 104 L 273 100 L 267 103 L 260 103 L 256 99 L 254 94 L 253 86 L 253 55 L 254 48 L 257 42 L 261 38 L 265 36 L 270 35 L 272 33 L 254 32 L 253 29 Z M 104 0 L 68 1 L 72 2 L 79 9 L 81 14 L 84 28 L 86 58 L 86 45 L 87 35 L 89 22 L 91 14 L 94 8 L 100 2 L 102 2 Z M 0 1 L 3 2 L 8 7 L 9 11 L 9 75 L 11 84 L 15 93 L 18 96 L 18 97 L 24 102 L 32 106 L 40 108 L 59 108 L 66 106 L 71 104 L 74 102 L 80 96 L 83 90 L 85 84 L 85 78 L 84 80 L 84 84 L 80 92 L 77 96 L 72 100 L 68 102 L 60 104 L 51 104 L 47 103 L 40 99 L 35 94 L 33 91 L 30 84 L 28 71 L 28 12 L 30 6 L 35 2 L 36 0 Z"
-            fillRule="evenodd"
-          />
-        </svg>
-      </div>
+        <div className="flex items-center justify-center">
+          {/* Official Uratro Metro Pin Logo Mark */}
+          <div
+            ref={emblemRef}
+            style={{ opacity: 0, filter: 'blur(8px)', transform: 'scale(0.88)' }}
+            className="w-12 h-14 sm:w-16 sm:h-20 md:w-20 md:h-24 mr-4 sm:mr-6 flex items-center justify-center drop-shadow-[0_0_25px_rgba(255,255,255,0.3)] will-change-transform"
+          >
+            <img
+              src="/uratro-pin-logo.png"
+              alt="Uratro"
+              className="w-full h-full object-contain"
+            />
+          </div>
 
-      {/* ================= STAGE 2: EXACT NABILISSA 3-SHUTTER ARCHITECTURAL EXPANSION ================= */}
-      <div ref={shutterWrapRef} className="absolute inset-0 pointer-events-none hidden">
-        <div
-          ref={shutter1Ref}
-          className="hero-img-panel hero-img-1 bg-[#101014] border-x border-white/5"
-        />
-        <div
-          ref={shutter2Ref}
-          className="hero-img-panel hero-img-2 bg-[#121218] border-x border-white/5"
-        />
-        <div
-          ref={shutter3Ref}
-          className="hero-img-panel hero-img-3 bg-[#101014] border-x border-white/5"
-        />
+          {/* Typography: U R A  |  T R O */}
+          <div className="flex items-center font-sans tracking-[0.38em] text-xl sm:text-2xl md:text-3xl font-light text-white uppercase select-none">
+            <span
+              ref={uraRef}
+              style={{ opacity: 0, filter: 'blur(4px)', transform: 'translateX(-16px)' }}
+              className="inline-block font-light will-change-transform"
+            >
+              URA
+            </span>
+
+            {/* Crisp vertical separator line */}
+            <span
+              ref={dividerRef}
+              style={{ opacity: 0, transform: 'scaleY(0)' }}
+              className="inline-block h-6 sm:h-8 w-[1.5px] bg-white/70 mx-3 sm:mx-5 origin-center will-change-transform"
+            />
+
+            <span
+              ref={troRef}
+              style={{ opacity: 0, filter: 'blur(4px)', transform: 'translateX(16px)' }}
+              className="inline-block font-light will-change-transform"
+            >
+              TRO
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

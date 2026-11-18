@@ -24,12 +24,12 @@ export default function BottomDock({ activeTab, onTabChange, onOpenDispatch }: B
   }, []);
 
   const tabs: { key: TabKey; label: string }[] = [
-    { key: 'index', label: 'INDEX +' },
-    { key: 'topology', label: 'TOPOLOGY +' },
-    { key: 'analytics', label: 'ANALYTICS +' },
-    { key: 'fleet', label: 'FLEET +' },
-    { key: 'incidents', label: 'INCIDENTS +' },
-    { key: 'simulator', label: 'SIMULATOR +' },
+    { key: 'index', label: 'OVERVIEW' },
+    { key: 'topology', label: 'METRO MAP' },
+    { key: 'analytics', label: 'PASSENGER STATS' },
+    { key: 'fleet', label: 'TRAIN FLEET' },
+    { key: 'incidents', label: 'SAFETY & ALERTS' },
+    { key: 'simulator', label: 'TICKET GATES' },
   ];
 
   return (
@@ -42,7 +42,7 @@ export default function BottomDock({ activeTab, onTabChange, onOpenDispatch }: B
           className="flex items-center justify-center h-8 px-2 rounded-xs bg-neutral-900 border border-neutral-700 shadow-md hover:scale-105 transition-transform"
           title="Uratro Home"
         >
-          <img src="/uratro-logo-clean.png" alt="Uratro" className="h-4 w-auto object-contain" />
+          <img src="/uratro-pin-logo.png" alt="Uratro" className="h-6 w-auto object-contain" />
         </button>
 
         {/* Tab Buttons */}
@@ -80,7 +80,7 @@ export default function BottomDock({ activeTab, onTabChange, onOpenDispatch }: B
 
         {/* Exact Nabil Issa Animated Button */}
         <NabilButton
-          text="DISPATCH ALERT"
+          text="REPORT INCIDENT"
           onClick={onOpenDispatch}
           theme="black"
         />

@@ -48,59 +48,59 @@ export default function HudOverlay({ mouseCoords, kpis }: HudOverlayProps) {
 
         {/* Tactical status text */}
         <div className="space-y-0.5 leading-tight">
-          <div className="text-neutral-200 font-semibold tracking-widest">// METRO UNIT TRACKED</div>
-          <div className="text-neutral-500">I AM MONITORING TELEMETRY</div>
-          <div className="text-neutral-500">AUTONOMOUS DISPATCH LIVE</div>
+          <div className="text-neutral-200 font-semibold tracking-widest">// LIVE TRAIN TRACKER</div>
+          <div className="text-neutral-400">MONITORING ROUTE & SPEED</div>
+          <div className="text-neutral-500">AUTO-SCHEDULE READY</div>
         </div>
       </div>
 
-      {/* ================= TOP-CENTER BRAND LOGO (45% REFINED SIZE) ================= */}
+      {/* ================= TOP-CENTER BRAND LOGO ================= */}
       <div className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
         <img 
           src="/uratro-logo-clean.png" 
           alt="Uratro" 
           className="h-7 sm:h-8 md:h-10 w-auto object-contain block"
         />
-        <div className="text-[8px] sm:text-[9px] tracking-[0.28em] text-neutral-500 uppercase mt-1 text-center font-mono">
-          Autonomous Rapid Transit Operations
+        <div className="text-[8px] sm:text-[9px] tracking-[0.28em] text-neutral-400 uppercase mt-1 text-center font-mono">
+          Smart Metro Rail Network
         </div>
       </div>
 
       {/* ================= TOP-RIGHT METRIC TELEMETRY MATRIX ================= */}
       <div className="absolute top-6 right-6 sm:top-8 sm:right-8 text-right hidden md:block">
         <div className="text-neutral-200 font-semibold tracking-widest mb-1.5">
-          // UI/UX OPERATIONS // CONCEPTUALIST
+          // LIVE NETWORK STATUS
         </div>
         <div className="space-y-0.5 text-neutral-400 font-mono text-[10px]">
           <div className="flex justify-end gap-6">
-            <span className="text-neutral-600">[URATRO.SYS]</span>
-            <span className="w-48 text-left">PINK LINE UTILIZATION</span>
+            <span className="text-neutral-600">[NETWORK]</span>
+            <span className="w-48 text-left">PINK LINE OCCUPANCY</span>
             <span className="text-neutral-200 font-bold">94%</span>
           </div>
           <div className="flex justify-end gap-6">
-            <span className="text-transparent">[URATRO.SYS]</span>
-            <span className="w-48 text-left">BLUE LINE UTILIZATION</span>
+            <span className="text-transparent">[NETWORK]</span>
+            <span className="w-48 text-left">BLUE LINE OCCUPANCY</span>
             <span className="text-neutral-200 font-bold">81%</span>
           </div>
           <div className="flex justify-end gap-6">
-            <span className="text-transparent">[URATRO.SYS]</span>
-            <span className="w-48 text-left">GRID FREQUENCY</span>
-            <span className="text-cyan-400 font-bold">{kpis?.grid_frequency_hz || '50.0'} HZ</span>
+            <span className="text-transparent">[NETWORK]</span>
+            <span className="w-48 text-left">POWER SUPPLY</span>
+            <span className="text-cyan-400 font-bold">{kpis?.grid_frequency_hz || '50.0'} HZ (NORMAL)</span>
           </div>
           <div className="flex justify-end gap-6">
-            <span className="text-transparent">[URATRO.SYS]</span>
-            <span className="w-48 text-left">SIGNAL INTEGRITY</span>
-            <span className="text-emerald-400 font-bold">{kpis?.signal_integrity_pct || '99.98'}%</span>
+            <span className="text-transparent">[NETWORK]</span>
+            <span className="w-48 text-left">TRACK SIGNALS</span>
+            <span className="text-emerald-400 font-bold">{kpis?.signal_integrity_pct || '99.98'}% HEALTHY</span>
           </div>
           <div className="flex justify-end gap-6">
-            <span className="text-transparent">[URATRO.SYS]</span>
-            <span className="w-48 text-left">ACTIVE ROLLING STOCK</span>
-            <span className="text-neutral-200 font-bold">{kpis?.active_rakes || 4} RAKES</span>
+            <span className="text-transparent">[NETWORK]</span>
+            <span className="w-48 text-left">TRAINS IN SERVICE</span>
+            <span className="text-neutral-200 font-bold">{kpis?.active_rakes || 4} ACTIVE TRAINS</span>
           </div>
           <div className="flex justify-end gap-6">
-            <span className="text-neutral-600">[13] RELATIONS</span>
-            <span className="w-48 text-left text-neutral-500">DATABASE STATUS</span>
-            <span className="text-cyan-400 font-bold">3NF // BCNF</span>
+            <span className="text-neutral-600">[DATA]</span>
+            <span className="w-48 text-left text-neutral-500">SYSTEM DATABASE</span>
+            <span className="text-emerald-400 font-bold">CONNECTED &amp; SYNCED</span>
           </div>
         </div>
       </div>
@@ -124,18 +124,18 @@ export default function HudOverlay({ mouseCoords, kpis }: HudOverlayProps) {
           <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/60"></div>
           <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/60"></div>
 
-          <div className="text-neutral-200 font-semibold tracking-widest">// DEFCON PROTOCOL 01</div>
-          <div className="text-neutral-400">AUTOMATED SIGNAL INTERLOCK</div>
+          <div className="text-neutral-200 font-semibold tracking-widest">// SAFETY SYSTEM</div>
+          <div className="text-neutral-400">AUTOMATIC SIGNAL LOCK</div>
           <div className="text-neutral-500 text-[9px] pt-1 border-t border-neutral-900 flex justify-between">
-            <span>PROTOCOL</span>
-            <span className="text-neutral-300">589539</span>
+            <span>TRACK SAFETY</span>
+            <span className="text-emerald-400">NORMAL</span>
           </div>
           <div className="text-neutral-500 text-[9px] flex justify-between">
-            <span>WARNING</span>
-            <span className="text-emerald-400">NOMINAL</span>
+            <span>SYSTEM HEALTH</span>
+            <span className="text-emerald-400">100% OPERATIONAL</span>
           </div>
           <div className="text-neutral-300 text-[9px] pt-1 font-bold">
-            2628 // ETERNITY
+            JAIPUR METRO NETWORK
           </div>
         </div>
 

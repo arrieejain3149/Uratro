@@ -33,8 +33,7 @@ export default function AtmosphereBackground() {
     let t = 0;
     const render = () => {
       t += 0.005;
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
 
       // Render organic ambient shifting blobs
       for (const b of blobs) {
