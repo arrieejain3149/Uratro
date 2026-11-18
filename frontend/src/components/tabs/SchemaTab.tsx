@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Database, Key, Link2, Zap, Search, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Database, Key, Link2, Zap, Search, ArrowRight, ShieldCheck, Eye, ZoomIn, ZoomOut, RotateCcw, Download, X, Maximize2 } from 'lucide-react';
 
 interface TableDef {
   name: string;
@@ -296,7 +296,10 @@ export default function SchemaTab() {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [liveRowCounts, setLiveRowCounts] = useState<Record<string, number>>({});
-  const [activeView, setActiveView] = useState<'tables' | 'views' | 'triggers'>('tables');
+  const [activeView, setActiveView] = useState<'tables' | 'diagram' | 'views' | 'triggers'>('tables');
+  const [isDiagramModalOpen, setIsDiagramModalOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [isInverted, setIsInverted] = useState<boolean>(false);
 
   useEffect(() => {
     // Fetch live schema row counts from MySQL backend
@@ -343,32 +346,57 @@ export default function SchemaTab() {
           </p>
         </div>
 
-        {/* View Switcher Tabs */}
-        <div className="flex items-center gap-2 bg-[#18181B] border border-[#27272A] p-1 rounded-sm">
+        {/* View Switcher & Action Button */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Prominent Action Button: View Full ER Diagram */}
           <button
-            onClick={() => setActiveView('tables')}
-            className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer ${
-              activeView === 'tables' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
-            }`}
+            onClick={() => {
+              setZoomLevel(1);
+              setIsDiagramModalOpen(true);
+            }}
+            className="px-3.5 py-1.5 text-xs font-semibold tracking-wide bg-[#C5A880] hover:bg-[#d4ba96] text-black rounded-sm transition-all flex items-center gap-1.5 cursor-pointer shadow-md hover:shadow-[#C5A880]/20 font-mono"
+            title="Open ER Diagram in Fullscreen Lightbox"
           >
-            Tables (13)
+            <Eye className="w-3.5 h-3.5" />
+            <span>View ER Diagram Final</span>
           </button>
-          <button
-            onClick={() => setActiveView('views')}
-            className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer ${
-              activeView === 'views' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            SQL Views (4)
-          </button>
-          <button
-            onClick={() => setActiveView('triggers')}
-            className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer ${
-              activeView === 'triggers' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            Triggers & Procedures
-          </button>
+
+          {/* View Switcher Tabs */}
+          <div className="flex items-center gap-1 bg-[#18181B] border border-[#27272A] p-1 rounded-sm">
+            <button
+              onClick={() => setActiveView('tables')}
+              className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer ${
+                activeView === 'tables' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Tables (13)
+            </button>
+            <button
+              onClick={() => setActiveView('diagram')}
+              className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer flex items-center gap-1.5 ${
+                activeView === 'diagram' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <Eye className="w-3 h-3 text-[#C5A880]" />
+              <span>ER Diagram</span>
+            </button>
+            <button
+              onClick={() => setActiveView('views')}
+              className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer ${
+                activeView === 'views' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              SQL Views (4)
+            </button>
+            <button
+              onClick={() => setActiveView('triggers')}
+              className={`px-3 py-1.5 text-xs font-mono rounded-xs transition-colors cursor-pointer ${
+                activeView === 'triggers' ? 'bg-[#27272A] text-white font-semibold' : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Triggers & Procedures
+            </button>
+          </div>
         </div>
       </div>
 
@@ -569,7 +597,94 @@ export default function SchemaTab() {
         </div>
       )}
 
-      {/* VIEW 2: HIGH PERFORMANCE SQL VIEWS */}
+      {/* VIEW 2: VISUAL ER DIAGRAM CANVAS */}
+      {activeView === 'diagram' && (
+        <div className="space-y-4">
+          <div className="bg-[#18181B] border border-[#27272A] rounded-sm p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 text-[10px] font-mono bg-[#C5A880]/15 text-[#C5A880] border border-[#C5A880]/30 rounded-xs">
+                  MASTER RELATIONAL BLUEPRINT
+                </span>
+                <span className="text-xs font-mono text-white font-semibold">
+                  Complete Chen / Crow's-Foot ER Diagram (Final)
+                </span>
+              </div>
+              <p className="text-xs text-neutral-400 mt-1">
+                Visual specification showing all 13 entities, attributes, ISA incident specialization, and relationship cardinalities.
+              </p>
+            </div>
+
+            {/* Quick Controls */}
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <button
+                onClick={() => setZoomLevel((z) => Math.max(0.5, z - 0.25))}
+                className="p-1.5 bg-[#141416] hover:bg-[#202024] border border-[#27272A] rounded text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="text-[11px] text-neutral-400 min-w-12 text-center">
+                {Math.round(zoomLevel * 100)}%
+              </span>
+              <button
+                onClick={() => setZoomLevel((z) => Math.min(3, z + 0.25))}
+                className="p-1.5 bg-[#141416] hover:bg-[#202024] border border-[#27272A] rounded text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setZoomLevel(1)}
+                className="p-1.5 bg-[#141416] hover:bg-[#202024] border border-[#27272A] rounded text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                title="Reset Zoom"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setIsInverted((v) => !v)}
+                className={`px-2.5 py-1.5 border rounded text-xs transition-colors cursor-pointer ${
+                  isInverted
+                    ? 'bg-[#C5A880]/20 border-[#C5A880] text-[#C5A880]'
+                    : 'bg-[#141416] border-[#27272A] text-neutral-300 hover:text-white'
+                }`}
+                title="Toggle Dark/Light Mode Inversion"
+              >
+                {isInverted ? 'Inverted (Dark)' : 'Natural (Light)'}
+              </button>
+              <button
+                onClick={() => setIsDiagramModalOpen(true)}
+                className="px-3 py-1.5 bg-[#C5A880] hover:bg-[#d6bc96] text-black font-semibold rounded text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                Fullscreen
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Canvas */}
+          <div className="bg-[#18181B] border border-[#27272A] rounded-sm p-4 overflow-auto max-h-[680px] flex items-center justify-center relative shadow-inner">
+            <div
+              className="transition-transform duration-200 origin-center p-4 rounded-sm flex items-center justify-center"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                backgroundColor: isInverted ? '#141416' : '#ffffff',
+              }}
+            >
+              <img
+                src="/er-diagram-final.png"
+                alt="URATRO Master ER Diagram Final"
+                className={`max-w-none transition-all duration-300 ${
+                  isInverted ? 'invert hue-rotate-180 contrast-125' : ''
+                }`}
+                style={{ width: '100%', minWidth: '950px' }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 3: HIGH PERFORMANCE SQL VIEWS */}
       {activeView === 'views' && (
         <div className="space-y-4">
           <div className="bg-[#18181B] border border-[#27272A] p-4 rounded-sm text-xs font-mono text-neutral-400">
@@ -670,6 +785,104 @@ export default function SchemaTab() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* FULLSCREEN ER DIAGRAM LIGHTBOX MODAL */}
+      {isDiagramModalOpen && (
+        <div className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 animate-fadeIn">
+          {/* Modal Top Bar */}
+          <div className="flex items-center justify-between pb-3 border-b border-[#27272A] z-10 bg-[#161619]/90 px-4 py-2.5 rounded-sm">
+            <div className="flex items-center gap-3">
+              <span className="px-2 py-0.5 text-[10px] font-mono bg-[#C5A880]/15 text-[#C5A880] border border-[#C5A880]/30 rounded-xs uppercase">
+                ER Diagram Final
+              </span>
+              <span className="text-xs sm:text-sm font-bold text-white font-mono">
+                smart_metro_db Master Relational Architecture
+              </span>
+            </div>
+
+            {/* Modal Controls */}
+            <div className="flex items-center gap-2 font-mono text-xs">
+              <button
+                onClick={() => setZoomLevel((z) => Math.max(0.4, z - 0.2))}
+                className="p-1.5 bg-[#1C1C20] hover:bg-[#28282E] border border-[#27272A] rounded text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="text-[11px] text-neutral-400 min-w-12 text-center">
+                {Math.round(zoomLevel * 100)}%
+              </span>
+              <button
+                onClick={() => setZoomLevel((z) => Math.min(3.5, z + 0.2))}
+                className="p-1.5 bg-[#1C1C20] hover:bg-[#28282E] border border-[#27272A] rounded text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setZoomLevel(1)}
+                className="p-1.5 bg-[#1C1C20] hover:bg-[#28282E] border border-[#27272A] rounded text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                title="Reset Zoom"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setIsInverted((v) => !v)}
+                className={`px-3 py-1.5 border rounded text-xs transition-colors cursor-pointer ${
+                  isInverted
+                    ? 'bg-[#C5A880]/20 border-[#C5A880] text-[#C5A880]'
+                    : 'bg-[#1C1C20] border-[#27272A] text-neutral-300 hover:text-white'
+                }`}
+                title="Toggle Dark/Light Inversion"
+              >
+                {isInverted ? 'Inverted (Dark)' : 'Natural (Light)'}
+              </button>
+              <a
+                href="/er-diagram-final.png"
+                download="smart_metro_db_er_diagram_final.png"
+                className="px-3 py-1.5 bg-[#242428] hover:bg-[#303036] border border-[#3A3A40] text-neutral-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Download High-Res PNG"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>PNG</span>
+              </a>
+              <button
+                onClick={() => setIsDiagramModalOpen(false)}
+                className="w-8 h-8 rounded-sm bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer ml-2"
+                title="Close Lightbox"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Modal Zoomable Body */}
+          <div className="flex-1 overflow-auto flex items-center justify-center p-6 my-2 relative rounded-sm bg-[#111113] border border-[#222226]">
+            <div
+              className="transition-transform duration-150 origin-center p-6 rounded-sm shadow-2xl"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                backgroundColor: isInverted ? '#141416' : '#ffffff',
+              }}
+            >
+              <img
+                src="/er-diagram-final.png"
+                alt="URATRO Master ER Diagram Final Fullscreen"
+                className={`max-w-none transition-all duration-300 select-none ${
+                  isInverted ? 'invert hue-rotate-180 contrast-125' : ''
+                }`}
+                style={{ width: '100%', minWidth: '1100px' }}
+              />
+            </div>
+          </div>
+
+          {/* Modal Footer */}
+          <div className="flex items-center justify-between pt-2 px-2 text-[11px] font-mono text-neutral-400">
+            <span>Scroll horizontally/vertically to pan around • Press Esc or ✕ to close</span>
+            <span className="text-[#C5A880]">smart_metro_db // Chen Notation Master Diagram</span>
           </div>
         </div>
       )}
