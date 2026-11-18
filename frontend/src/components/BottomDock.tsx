@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Moon } from 'lucide-react';
 import NabilButton from './NabilButton';
 
-export type TabKey = 'index' | 'topology' | 'analytics' | 'fleet' | 'incidents' | 'simulator';
+export type TabKey = 'index' | 'topology' | 'analytics' | 'fleet' | 'incidents' | 'simulator' | 'workbench' | 'schema';
 
 interface BottomDockProps {
   activeTab: TabKey;

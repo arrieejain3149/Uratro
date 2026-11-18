@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import stations, fleet, ticketing, incidents, maintenance, analytics, telemetry
+from app.routers import stations, fleet, ticketing, incidents, maintenance, analytics, telemetry, sql_console
 
 app = FastAPI(
     title="URATRO // Autonomous Smart Metro & Operations Management API",
@@ -25,6 +25,7 @@ app.include_router(incidents.router)
 app.include_router(maintenance.router)
 app.include_router(analytics.router)
 app.include_router(telemetry.router)
+app.include_router(sql_console.router)
 
 @app.get("/api/v1/health")
 def health_check():

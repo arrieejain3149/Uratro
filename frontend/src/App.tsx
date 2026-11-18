@@ -11,6 +11,8 @@ import AnalyticsTab from './components/tabs/AnalyticsTab';
 import FleetTab from './components/tabs/FleetTab';
 import IncidentsTab from './components/tabs/IncidentsTab';
 import SimulatorTab from './components/tabs/SimulatorTab';
+import WorkbenchTab from './components/tabs/WorkbenchTab';
+import SchemaTab from './components/tabs/SchemaTab';
 import DispatchModal from './components/DispatchModal';
 import IntroLoader from './components/IntroLoader';
 import CursorCanvas from './components/CursorCanvas';
@@ -136,6 +138,20 @@ export default function App() {
         {activeTab === 'simulator' && (
           <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
             <SimulatorTab />
+          </div>
+        )}
+
+        {/* TAB 7: SQL WORKBENCH (Query Console - Exclusive to Left Menu Drawer) */}
+        {activeTab === 'workbench' && (
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
+            <WorkbenchTab />
+          </div>
+        )}
+
+        {/* TAB 8: ER DIAGRAM & SCHEMA (Architecture - Exclusive to Left Menu Drawer) */}
+        {activeTab === 'schema' && (
+          <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
+            <SchemaTab />
           </div>
         )}
       </main>
