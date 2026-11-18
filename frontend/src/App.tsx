@@ -109,7 +109,7 @@ export default function App() {
         {/* TAB 2: METRO MAP (Topology) */}
         {activeTab === 'topology' && (
           <div className="w-full h-full relative z-20 pt-16 sm:pt-20 pb-16">
-            <TopologyTab />
+            <TopologyTab onNavigateToSimulator={() => setActiveTab('simulator')} />
           </div>
         )}
 
