@@ -119,7 +119,7 @@ INSERT INTO Emergency_Incident (Incident_ID, Metro_ID, Track_ID, Reporter_Emp_ID
 (3, 3, 2, 6, TRUE, FALSE, FALSE, NOW() - INTERVAL 2 HOUR, 'Braking pressure variance detected on Track 2', 'In Progress');
 
 -- 11. SECURITY INCIDENTS
-INSERT INTO Security_Incident (Security_Inc_ID, Station_ID, Reporter_Emp_ID, Incident_Type, Timestamp, Details, Resolution_Status) VALUES
+INSERT INTO Security_Incident (Security_Inc_ID, Station_ID, Reporter_Emp_ID, Category_Type, Timestamp, Details, Resolution_Status) VALUES
 (1, 6, 3, 'Dispute', NOW() - INTERVAL 1 DAY, 'Commuter heated debate regarding baggage scanning queue.', 'Resolved'),
 (2, 7, 8, 'Medical', NOW() - INTERVAL 3 HOUR, 'Elderly passenger required emergency glucose hydration at platform 2.', 'Resolved'),
 (3, 8, 3, 'Unattended Item', NOW() - INTERVAL 40 MINUTE, 'Suspicious briefcase scanned and identified as forgotten luggage.', 'In Progress');

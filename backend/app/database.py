@@ -20,16 +20,19 @@ DB_PASSWORD = os.getenv("DB_PASSWORD", "Arijain@3149")
 DB_NAME = os.getenv("DB_NAME", "smart_metro_db")
 
 def get_connection():
-    return pymysql.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME,
-        charset="utf8mb4",
-        cursorclass=DictCursor,
-        autocommit=True
-    )
+    kwargs = {
+        "host": DB_HOST,
+        "port": DB_PORT,
+        "user": DB_USER,
+        "password": DB_PASSWORD,
+        "database": DB_NAME,
+        "charset": "utf8mb4",
+        "cursorclass": DictCursor,
+        "autocommit": True,
+    }
+    if DB_PORT == 4000 or os.getenv("DB_SSL", "false").lower() == "true":
+        kwargs["ssl"] = {"ssl_mode": "REQUIRED"}
+    return pymysql.connect(**kwargs)
 
 @contextmanager
 def get_db():
