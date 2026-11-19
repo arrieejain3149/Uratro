@@ -1,29 +1,89 @@
 import { useState } from 'react';
-import { Menu, X, ArrowUpRight, ShieldAlert, Radio, BarChart3, Train, CreditCard, LayoutDashboard, Terminal, Network } from 'lucide-react';
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  ShieldAlert,
+  Radio,
+  BarChart3,
+  Train,
+  CreditCard,
+  LayoutDashboard,
+  Terminal,
+  Network,
+  UserCheck,
+  Wrench,
+  ShieldCheck,
+  LogIn,
+} from 'lucide-react';
 import type { TabKey } from './BottomDock';
+import type { UserRole } from '../types/auth';
 
 interface LeftSidebarProps {
   activeTab: TabKey;
   onTabChange: (tab: TabKey) => void;
   onOpenDispatch: () => void;
+  userRole?: UserRole;
+  onOpenAuthModal?: () => void;
 }
 
-export default function LeftSidebar({ activeTab, onTabChange, onOpenDispatch }: LeftSidebarProps) {
+interface NavItem {
+  key: TabKey;
+  label: string;
+  icon: any;
+}
+
+export default function LeftSidebar({
+  activeTab,
+  onTabChange,
+  onOpenDispatch,
+  userRole = 'guest',
+  onOpenAuthModal,
+}: LeftSidebarProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const transitNavItems: { key: TabKey; label: string; icon: any; desc: string }[] = [
-    { key: 'index', label: 'Overview', icon: LayoutDashboard, desc: '3D live rail showcase & network summary' },
-    { key: 'topology', label: 'Metro Map', icon: Radio, desc: 'Interactive lines, stations & interchanges' },
-    { key: 'analytics', label: 'Passenger Stats', icon: BarChart3, desc: 'Revenue, crowd density & travel patterns' },
-    { key: 'fleet', label: 'Train Fleet', icon: Train, desc: 'Active trains, driver schedules & repairs' },
-    { key: 'incidents', label: 'Safety & Alerts', icon: ShieldAlert, desc: 'Technical & passenger safety response' },
-    { key: 'simulator', label: 'Ticket Gates', icon: CreditCard, desc: 'Interactive smart card entry & exit sandbox' },
-  ];
+  // Define role-specific hamburger drawer items strictly according to user rules
+  const getDrawerItems = (role: UserRole): NavItem[] => {
+    if (role === 'guest') {
+      // 1-by Default: Nothing other than Overview and Metro Map
+      return [
+        { key: 'index', label: 'Overview', icon: LayoutDashboard },
+        { key: 'topology', label: 'Metro Map', icon: Radio },
+      ];
+    } else if (role === 'passenger') {
+      // 2-on Each Passenger Portal: Only Overview, Ticket Pass, Metro Map
+      return [
+        { key: 'index', label: 'Overview', icon: LayoutDashboard },
+        { key: 'passenger', label: 'Ticket Pass', icon: UserCheck },
+        { key: 'topology', label: 'Metro Map', icon: Radio },
+      ];
+    } else if (role === 'employee') {
+      // 3-On Employee Portal: OverView, Operations and Maintenance, Metro Map, Trains, Safety Alerts, Passenger Stats
+      return [
+        { key: 'index', label: 'Overview', icon: LayoutDashboard },
+        { key: 'employee', label: 'Operations and Maintenance', icon: Wrench },
+        { key: 'topology', label: 'Metro Map', icon: Radio },
+        { key: 'fleet', label: 'Trains', icon: Train },
+        { key: 'incidents', label: 'Safety & Alerts', icon: ShieldAlert },
+        { key: 'analytics', label: 'Passenger Stats', icon: BarChart3 },
+      ];
+    } else {
+      // 4-On Admin Portal: Overview, Data Feeder, Trains, SQL Workbench, Metro Map, Passenger Stats, Safety And Alerts, Ticket Gates
+      return [
+        { key: 'index', label: 'Overview', icon: LayoutDashboard },
+        { key: 'admin', label: 'Data Feeder', icon: ShieldCheck },
+        { key: 'fleet', label: 'Trains', icon: Train },
+        { key: 'workbench', label: 'SQL Workbench', icon: Terminal },
+        { key: 'topology', label: 'Metro Map', icon: Radio },
+        { key: 'analytics', label: 'Passenger Stats', icon: BarChart3 },
+        { key: 'incidents', label: 'Safety & Alerts', icon: ShieldAlert },
+        { key: 'simulator', label: 'Ticket Gates', icon: CreditCard },
+        { key: 'schema', label: 'ER Diagram & Schema', icon: Network },
+      ];
+    }
+  };
 
-  const dbmsNavItems: { key: TabKey; label: string; icon: any; desc: string }[] = [
-    { key: 'workbench', label: 'SQL Workbench', icon: Terminal, desc: 'Run SQL queries & inspect live MySQL table outputs' },
-    { key: 'schema', label: 'ER Diagram & Schema', icon: Network, desc: '13 relational tables, PK/FK keys & triggers' },
-  ];
+  const navItems = getDrawerItems(userRole);
 
   const handleSelectTab = (key: TabKey) => {
     onTabChange(key);
@@ -66,8 +126,7 @@ export default function LeftSidebar({ activeTab, onTabChange, onOpenDispatch }: 
 
           {/* Drawer Panel */}
           <div className="relative w-80 sm:w-96 bg-[#161619] border-r border-[#27272A] h-full p-6 sm:p-8 flex flex-col justify-between z-10 shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-y-auto">
-            
-            {/* Header & Menus */}
+            {/* Header & Navigation */}
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-[#242428]">
                 <img
@@ -83,13 +142,9 @@ export default function LeftSidebar({ activeTab, onTabChange, onOpenDispatch }: 
                 </button>
               </div>
 
-              {/* Transit Operations Section */}
-              <nav className="mt-6 space-y-1">
-                <span className="text-[10px] tracking-[0.25em] text-neutral-400 uppercase font-mono block mb-2">
-                  // TRANSIT OPERATIONS
-                </span>
-
-                {transitNavItems.map((item) => {
+              {/* Navigation Items */}
+              <div className="mt-5 space-y-1">
+                {navItems.map((item) => {
                   const isActive = activeTab === item.key;
                   const Icon = item.icon;
                   return (
@@ -103,92 +158,80 @@ export default function LeftSidebar({ activeTab, onTabChange, onOpenDispatch }: 
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`w-4 h-4 ${isActive ? 'text-[#C5A880]' : 'text-neutral-500 group-hover:text-neutral-300'}`} />
-                        <div>
-                          <div className={`text-xs font-semibold tracking-wide ${isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'}`}>
-                            {item.label}
-                          </div>
-                          <div className="text-[10px] text-neutral-400 mt-0.5 line-clamp-1">
-                            {item.desc}
-                          </div>
-                        </div>
+                        <Icon
+                          className={`w-4 h-4 ${
+                            isActive
+                              ? 'text-[#C5A880]'
+                              : 'text-neutral-500 group-hover:text-neutral-300'
+                          }`}
+                        />
+                        <span
+                          className={`text-xs font-semibold tracking-wide ${
+                            isActive ? 'text-white' : 'text-neutral-300 group-hover:text-white'
+                          }`}
+                        >
+                          {item.label}
+                        </span>
                       </div>
-                      <ArrowUpRight className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'opacity-100 text-[#C5A880]' : 'text-neutral-400'}`} />
+                      <ArrowUpRight
+                        className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity ${
+                          isActive ? 'opacity-100 text-[#C5A880]' : 'text-neutral-400'
+                        }`}
+                      />
                     </button>
                   );
                 })}
-              </nav>
-
-              {/* Database & Architecture Section */}
-              <div className="mt-5 pt-4 border-t border-[#242428]">
-                <div className="flex items-center gap-1.5 mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880]"></span>
-                  <span className="text-[10px] tracking-[0.25em] text-[#C5A880] uppercase font-mono font-semibold">
-                    // DATABASE & ARCHITECTURE
-                  </span>
-                </div>
-
-                <div className="space-y-1">
-                  {dbmsNavItems.map((item) => {
-                    const isActive = activeTab === item.key;
-                    const Icon = item.icon;
-                    return (
-                      <button
-                        key={item.key}
-                        onClick={() => handleSelectTab(item.key)}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-sm text-left transition-all group cursor-pointer ${
-                          isActive
-                            ? 'bg-[#222226] text-white border-l-2 border-[#C5A880]'
-                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800/40'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className={`w-4 h-4 ${isActive ? 'text-[#C5A880]' : 'text-[#C5A880]/70 group-hover:text-[#C5A880]'}`} />
-                          <div>
-                            <div className={`text-xs font-semibold tracking-wide ${isActive ? 'text-white' : 'text-neutral-200 group-hover:text-white'}`}>
-                              {item.label}
-                            </div>
-                            <div className="text-[10px] text-neutral-400 mt-0.5 line-clamp-1">
-                              {item.desc}
-                            </div>
-                          </div>
-                        </div>
-                        <ArrowUpRight className={`w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'opacity-100 text-[#C5A880]' : 'text-neutral-400'}`} />
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
+
+              {/* Guest Login Callout */}
+              {userRole === 'guest' && (
+                <div className="mt-6 p-4 rounded-xs bg-[#1A1A1E] border border-[#27272A] space-y-2">
+                  <div className="text-[10px] tracking-wider uppercase text-[#C5A880] font-mono font-semibold">
+                    Restricted Guest Mode
+                  </div>
+                  <p className="text-xs text-neutral-400">
+                    Log in with Passenger ID, Staff ID, or Admin code to unlock role portals.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setIsDrawerOpen(false);
+                      if (onOpenAuthModal) onOpenAuthModal();
+                    }}
+                    className="w-full mt-2 py-2 px-3 bg-[#C5A880] hover:bg-[#D4AF37] text-neutral-950 font-bold text-xs uppercase rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>Login / Access Portals</span>
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Footer with System Specs & Report Button */}
-            <div className="pt-5 mt-6 border-t border-[#242428] space-y-4">
-              <div className="bg-[#1C1C20] p-3 rounded-sm border border-[#27272A] text-[10px] font-mono text-neutral-400 space-y-1">
-                <div className="flex justify-between">
-                  <span>Network Power:</span>
-                  <span className="text-[#C5A880] font-bold">50.0 Hz (Stable)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Track Signals:</span>
-                  <span className="text-emerald-400 font-bold">99.98% Healthy</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Database:</span>
-                  <span className="text-neutral-300 font-bold">MySQL Synced</span>
-                </div>
-              </div>
-
-              {/* Emergency Action */}
-              <button
-                onClick={() => {
-                  setIsDrawerOpen(false);
-                  onOpenDispatch();
-                }}
-                className="w-full py-2.5 px-4 bg-[#C5A880] hover:bg-[#d6bc96] text-black font-semibold text-xs tracking-wider uppercase rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-              >
-                <ShieldAlert className="w-4 h-4" />
-                Report Incident
-              </button>
+            {/* Footer with Report Button */}
+            <div className="pt-4 mt-6 border-t border-[#242428]">
+              {/* Incident Button (Disabled or redirects to login for guests) */}
+              {userRole === 'guest' ? (
+                <button
+                  onClick={() => {
+                    setIsDrawerOpen(false);
+                    if (onOpenAuthModal) onOpenAuthModal();
+                  }}
+                  className="w-full py-2.5 px-4 bg-[#242428] hover:bg-[#323238] text-neutral-300 font-semibold text-xs tracking-wider uppercase rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <LogIn className="w-4 h-4 text-[#C5A880]" />
+                  <span>Login to Report Issue</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsDrawerOpen(false);
+                    onOpenDispatch();
+                  }}
+                  className="w-full py-2.5 px-4 bg-[#C5A880] hover:bg-[#d6bc96] text-black font-semibold text-xs tracking-wider uppercase rounded-sm transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                >
+                  <ShieldAlert className="w-4 h-4" />
+                  <span>Report Incident</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -48,7 +48,7 @@ export default function HudOverlay({ mouseCoords, kpis }: HudOverlayProps) {
 
         {/* Tactical status text */}
         <div className="space-y-0.5 leading-tight">
-          <div className="text-neutral-200 font-semibold tracking-widest">// LIVE TRAIN TRACKER</div>
+          <div className="text-neutral-200 font-semibold tracking-widest">LIVE TRAIN TRACKER</div>
           <div className="text-neutral-400">MONITORING ROUTE & SPEED</div>
           <div className="text-neutral-500">AUTO-SCHEDULE READY</div>
         </div>
@@ -69,7 +69,7 @@ export default function HudOverlay({ mouseCoords, kpis }: HudOverlayProps) {
       {/* ================= TOP-RIGHT METRIC TELEMETRY MATRIX ================= */}
       <div className="absolute top-6 right-6 sm:top-8 sm:right-8 text-right hidden md:block">
         <div className="text-neutral-200 font-semibold tracking-widest mb-1.5">
-          // LIVE NETWORK STATUS
+          LIVE NETWORK STATUS
         </div>
         <div className="space-y-0.5 text-neutral-400 font-mono text-[10px]">
           <div className="flex justify-end gap-6">
@@ -108,11 +108,9 @@ export default function HudOverlay({ mouseCoords, kpis }: HudOverlayProps) {
       {/* ================= MID-LEFT & MID-RIGHT GPS CROSSHAIRS ================= */}
       <div className="absolute top-1/2 left-6 sm:left-8 -translate-y-1/2 flex items-center gap-2">
         <span className="text-white/80 font-bold">26.8500° N</span>
-        <span className="text-neutral-600 font-bold">//</span>
       </div>
 
       <div className="absolute top-1/2 right-6 sm:right-8 -translate-y-1/2 flex items-center gap-2">
-        <span className="text-neutral-600 font-bold">//</span>
         <span className="text-white/80 font-bold">75.7600° E</span>
       </div>
 
@@ -124,7 +122,7 @@ export default function HudOverlay({ mouseCoords, kpis }: HudOverlayProps) {
           <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-white/60"></div>
           <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white/60"></div>
 
-          <div className="text-neutral-200 font-semibold tracking-widest">// SAFETY SYSTEM</div>
+          <div className="text-neutral-200 font-semibold tracking-widest">SAFETY SYSTEM</div>
           <div className="text-neutral-400">AUTOMATIC SIGNAL LOCK</div>
           <div className="text-neutral-500 text-[9px] pt-1 border-t border-neutral-900 flex justify-between">
             <span>TRACK SAFETY</span>

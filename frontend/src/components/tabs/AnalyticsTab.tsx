@@ -30,14 +30,14 @@ export default function AnalyticsTab() {
         <div>
           <div className="flex items-center gap-2 text-[#C5A880] text-xs font-bold tracking-widest uppercase font-mono">
             <BarChart3 className="w-4 h-4 animate-pulse" />
-            <span>METRO ANALYTICS // PASSENGER &amp; REVENUE DASHBOARD</span>
+            <span>METRO ANALYTICS &bull; PASSENGER &amp; REVENUE DASHBOARD</span>
           </div>
           <p className="text-xs text-neutral-400 mt-1">
             Live analytics on ticket sales, busiest routes, train reliability, and station crowd levels.
           </p>
         </div>
         <div className="text-[10px] text-neutral-400 uppercase tracking-widest border border-[#27272A] px-3 py-1 rounded-xs bg-[#18181B] font-mono">
-          DATABASE: CONNECTED // REAL-TIME METRICS
+          DATABASE: CONNECTED &bull; REAL-TIME METRICS
         </div>
       </div>
 

@@ -32,3 +32,18 @@ class MaintenanceJobCreate(BaseModel):
     job_type: str = "Routine"
     scheduled_date: Optional[str] = None
     engineer_ids: Optional[List[int]] = []
+
+class TicketBookingRequest(BaseModel):
+    passenger_id: int
+    entry_station_id: int
+    exit_station_id: int
+    fare: float = 20.0
+    payment_method: str = "Smart Card"
+
+class WalletTopUpRequest(BaseModel):
+    passenger_id: int
+    amount: float
+
+class MaintenanceStatusUpdate(BaseModel):
+    status: str
+

@@ -46,7 +46,7 @@ export default function IncidentsTab() {
         <div>
           <div className="flex items-center gap-2 text-[#C5A880] text-xs font-bold tracking-widest uppercase font-mono">
             <AlertTriangle className="w-4 h-4 text-[#C5A880]" />
-            <span>SAFETY &amp; INCIDENTS // LIVE ALERTS</span>
+            <span>SAFETY &amp; INCIDENTS &bull; LIVE ALERTS</span>
           </div>
           <p className="text-xs text-neutral-400 mt-1">
             Real-time management of technical train issues and station passenger assistance alerts.
@@ -80,7 +80,7 @@ export default function IncidentsTab() {
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="text-[9px] text-neutral-400 font-bold uppercase font-mono">
-                        INCIDENT #{em.Incident_ID} // {new Date(em.Timestamp).toLocaleTimeString()}
+                        INCIDENT #{em.Incident_ID} • {new Date(em.Timestamp).toLocaleTimeString()}
                       </div>
                       <div className="text-xs font-bold text-white mt-0.5">
                         {em.Location_Description || 'Rail Section Alert'}
@@ -152,7 +152,7 @@ export default function IncidentsTab() {
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="text-[9px] text-neutral-400 font-bold uppercase font-mono">
-                        REPORT #{sec.Security_Inc_ID} // {new Date(sec.Timestamp).toLocaleTimeString()}
+                        REPORT #{sec.Security_Inc_ID} • {new Date(sec.Timestamp).toLocaleTimeString()}
                       </div>
                       <div className="text-xs font-bold text-white mt-0.5">
                         {sec.Incident_Type} @ {sec.Station_Name}

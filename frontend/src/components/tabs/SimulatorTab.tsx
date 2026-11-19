@@ -118,7 +118,7 @@ export default function SimulatorTab() {
         <div>
           <div className="flex items-center gap-2 text-[#C5A880] text-xs font-bold tracking-widest uppercase font-mono">
             <CreditCard className="w-4 h-4 animate-pulse" />
-            <span>TICKET GATE SIMULATOR // PASSENGER ENTRY &amp; EXIT</span>
+            <span>TICKET GATE SIMULATOR &bull; PASSENGER ENTRY &amp; EXIT</span>
           </div>
           <p className="text-xs text-neutral-400 mt-1">
             Test passenger ticket swipe-in and swipe-out at station gates in real time.
@@ -214,7 +214,7 @@ export default function SimulatorTab() {
                 disabled={loading}
                 className="w-full bg-[#C5A880] hover:bg-[#D4B995] text-[#121214] font-extrabold text-xs py-2.5 rounded-xs tracking-wider uppercase transition-transform active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-md font-mono"
               >
-                <span>SWIPE IN // OPEN ENTRY GATE</span>
+                <span>SWIPE IN • OPEN ENTRY GATE</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -282,7 +282,7 @@ export default function SimulatorTab() {
             <div className="bg-[#18181B] border border-[#C5A880]/40 p-4 rounded-sm space-y-2 shadow-lg">
               <div className="flex items-center gap-1.5 text-[#C5A880] text-xs font-bold uppercase font-mono">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Gate Open // Ticket Verified</span>
+                <span>Gate Open • Ticket Verified</span>
               </div>
               <div className="text-xs text-neutral-200">
                 {latestReceipt.message}

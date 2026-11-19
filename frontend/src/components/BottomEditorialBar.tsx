@@ -3,16 +3,10 @@ import type { TabKey } from './BottomDock';
 
 interface BottomEditorialBarProps {
   onTabChange: (tab: TabKey) => void;
-  kpis?: {
-    total_revenue?: number;
-    total_trips?: number;
-    active_rakes?: number;
-    grid_frequency_hz?: number;
-    signal_integrity_pct?: number;
-  };
+  kpis?: any;
 }
 
-export default function BottomEditorialBar({ onTabChange, kpis }: BottomEditorialBarProps) {
+export default function BottomEditorialBar({ onTabChange }: BottomEditorialBarProps) {
   const [activeSlide, setActiveSlide] = useState(0);
 
   const events = [
@@ -29,7 +23,7 @@ export default function BottomEditorialBar({ onTabChange, kpis }: BottomEditoria
     {
       title: 'Signal Automation',
       location: 'Sindhi Camp Interchange',
-      time: 'Track Switch Clear // Interlock Active',
+      time: 'Track Switch Clear • Interlock Active',
     },
   ];
 
@@ -84,33 +78,11 @@ export default function BottomEditorialBar({ onTabChange, kpis }: BottomEditoria
           />
         </div>
         <div className="text-left text-xs">
-          <span className="text-[9px] tracking-wider text-[#C5A880] uppercase block font-mono">
-            STATION SCHEMATIC
-          </span>
           <span className="font-semibold text-white group-hover:text-[#C5A880] transition-colors">
             10 Stations Active
           </span>
         </div>
       </div>
-
-      {/* Column 3: Network Highlights & Analytics */}
-      <div className="flex-1 max-w-sm text-right">
-        <div className="text-[10px] tracking-[0.25em] text-neutral-400 font-mono uppercase mb-1">
-          NETWORK HIGHLIGHTS
-        </div>
-        <div className="text-xs text-white font-medium">
-          ₹{Number(kpis?.total_revenue || 342850).toLocaleString('en-IN')} Revenue •{' '}
-          {kpis?.total_trips || '48,200'} Trips Logged
-        </div>
-        <button
-          onClick={() => onTabChange('analytics')}
-          className="text-xs text-[#C5A880] hover:text-[#D8BA92] font-semibold mt-0.5 hover:underline underline-offset-4 transition-colors cursor-pointer inline-flex items-center gap-1"
-        >
-          <span>View Passenger Analytics</span>
-          <span>&rarr;</span>
-        </button>
-      </div>
-
     </footer>
   );
 }

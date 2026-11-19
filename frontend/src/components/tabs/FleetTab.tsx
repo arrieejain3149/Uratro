@@ -42,12 +42,9 @@ export default function FleetTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#27272A] gap-2">
         <div>
           <div className="flex items-center gap-2 text-[#C5A880] text-xs font-bold tracking-widest uppercase font-mono">
-            <Train className="w-4 h-4 animate-pulse" />
-            <span>TRAIN FLEET // TRAINS, SCHEDULES &amp; MAINTENANCE</span>
+            <Train className="w-4 h-4" />
+            <span>TRAINS</span>
           </div>
-          <p className="text-xs text-neutral-400 mt-1">
-            Live tracking of metro trains, daily driver schedules, and active maintenance jobs.
-          </p>
         </div>
       </div>
 
@@ -61,7 +58,7 @@ export default function FleetTab() {
           <div>
             <h3 className="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-3 flex items-center gap-1.5 font-mono">
               <Train className="w-3.5 h-3.5 text-[#C5A880]" />
-              Metro Train Fleet ({metros.length} Trains)
+              Metro Trains ({metros.length} Trains)
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
               {metros.map((m) => (
@@ -147,7 +144,7 @@ export default function FleetTab() {
                     <div className="flex justify-between items-start">
                       <div>
                         <span className="text-[9px] text-neutral-400 font-bold uppercase font-mono">
-                          JOB #{j.Job_ID} // TRAIN #{j.Metro_ID} ({j.Metro_Model})
+                          JOB #{j.Job_ID} • TRAIN #{j.Metro_ID} ({j.Metro_Model})
                         </span>
                         <div className="text-xs font-bold text-white mt-0.5">
                           {j.Component}

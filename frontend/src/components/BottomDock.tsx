@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Moon } from 'lucide-react';
 import NabilButton from './NabilButton';
 
-export type TabKey = 'index' | 'topology' | 'analytics' | 'fleet' | 'incidents' | 'simulator' | 'workbench' | 'schema';
+export type TabKey = 'index' | 'topology' | 'analytics' | 'fleet' | 'incidents' | 'simulator' | 'workbench' | 'schema' | 'passenger' | 'employee' | 'admin';
 
 interface BottomDockProps {
   activeTab: TabKey;
@@ -27,7 +27,7 @@ export default function BottomDock({ activeTab, onTabChange, onOpenDispatch }: B
     { key: 'index', label: 'OVERVIEW' },
     { key: 'topology', label: 'METRO MAP' },
     { key: 'analytics', label: 'PASSENGER STATS' },
-    { key: 'fleet', label: 'TRAIN FLEET' },
+    { key: 'fleet', label: 'TRAINS' },
     { key: 'incidents', label: 'SAFETY & ALERTS' },
     { key: 'simulator', label: 'TICKET GATES' },
   ];

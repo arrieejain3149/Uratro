@@ -1,14 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, AlertTriangle, ShieldAlert, Zap } from 'lucide-react';
+import type { UserRole } from '../types/auth';
 
 interface DispatchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  userRole?: UserRole;
 }
 
-export default function DispatchModal({ isOpen, onClose, onSuccess }: DispatchModalProps) {
-  const [incidentType, setIncidentType] = useState<'emergency' | 'security'>('emergency');
+export default function DispatchModal({ isOpen, onClose, onSuccess, userRole = 'guest' }: DispatchModalProps) {
+  const [incidentType, setIncidentType] = useState<'emergency' | 'security'>(
+    userRole === 'passenger' ? 'security' : 'emergency'
+  );
+
+  useEffect(() => {
+    if (userRole === 'passenger') {
+      setIncidentType('security');
+    }
+  }, [userRole]);
   
   // Emergency fields
   const [metroId, setMetroId] = useState(1);
@@ -93,7 +103,7 @@ export default function DispatchModal({ isOpen, onClose, onSuccess }: DispatchMo
           <div className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-[#C5A880]" />
             <span className="text-sm font-bold text-white uppercase tracking-wider">
-              REPORT INCIDENT // CONTROL ROOM ALERT
+              REPORT INCIDENT
             </span>
           </div>
           <button
@@ -104,34 +114,41 @@ export default function DispatchModal({ isOpen, onClose, onSuccess }: DispatchMo
           </button>
         </div>
 
-        {/* Type toggle */}
-        <div className="grid grid-cols-2 gap-2 bg-[#121214] p-1 border border-[#27272A] rounded-xs">
-          <button
-            type="button"
-            onClick={() => setIncidentType('emergency')}
-            className={`py-2 text-xs font-bold uppercase rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
-              incidentType === 'emergency'
-                ? 'bg-[#C5A880] text-[#121214] shadow-md'
-                : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            Train & Track Issue
-          </button>
+        {/* Type toggle: Restricted to Station & Passenger Issue for Passengers; Both for Employee/Admin */}
+        {userRole === 'passenger' ? (
+          <div className="p-2.5 bg-[#121214] border border-[#27272A] rounded-xs flex items-center gap-2 text-xs font-semibold text-white">
+            <ShieldAlert className="w-4 h-4 text-[#C5A880]" />
+            <span>Station & Passenger Issue Report</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2 bg-[#121214] p-1 border border-[#27272A] rounded-xs">
+            <button
+              type="button"
+              onClick={() => setIncidentType('emergency')}
+              className={`py-2 text-xs font-bold uppercase rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+                incidentType === 'emergency'
+                  ? 'bg-[#C5A880] text-[#121214] shadow-md'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <Zap className="w-3.5 h-3.5" />
+              Train & Track Issue
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setIncidentType('security')}
-            className={`py-2 text-xs font-bold uppercase rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
-              incidentType === 'security'
-                ? 'bg-[#C5A880] text-[#121214] shadow-md'
-                : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            Station & Passenger Issue
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => setIncidentType('security')}
+              className={`py-2 text-xs font-bold uppercase rounded-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+                incidentType === 'security'
+                  ? 'bg-[#C5A880] text-[#121214] shadow-md'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              <ShieldAlert className="w-3.5 h-3.5" />
+              Station & Passenger Issue
+            </button>
+          </div>
+        )}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">

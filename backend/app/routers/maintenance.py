@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.database import get_db
-from app.schemas import MaintenanceJobCreate
+from app.schemas import MaintenanceJobCreate, MaintenanceStatusUpdate
 
 router = APIRouter(prefix="/api/v1/maintenance", tags=["Maintenance Operations"])
 
@@ -52,4 +52,27 @@ def complete_maintenance_job(job_id: int):
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("UPDATE Maintenance_Job SET Resolution_Status = 'Completed' WHERE Job_ID = %s;", (job_id,))
+            # Trigger fallback: activate associated metro
+            cur.execute("SELECT Metro_ID FROM Maintenance_Job WHERE Job_ID = %s;", (job_id,))
+            row = cur.fetchone()
+            if row:
+                cur.execute("UPDATE Metro SET Current_Status = 'Active' WHERE Metro_ID = %s;", (row["Metro_ID"],))
             return {"status": "success", "message": f"Job {job_id} marked as Completed. Autonomous triggers executed."}
+
+@router.put("/jobs/{job_id}/status")
+def update_job_status(job_id: int, req: MaintenanceStatusUpdate):
+    with get_db() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE Maintenance_Job SET Resolution_Status = %s WHERE Job_ID = %s;", (req.status, job_id))
+            if req.status == "Completed":
+                cur.execute("SELECT Metro_ID FROM Maintenance_Job WHERE Job_ID = %s;", (job_id,))
+                row = cur.fetchone()
+                if row:
+                    cur.execute("UPDATE Metro SET Current_Status = 'Active' WHERE Metro_ID = %s;", (row["Metro_ID"],))
+            elif req.status in ["In Progress", "Scheduled"]:
+                cur.execute("SELECT Metro_ID FROM Maintenance_Job WHERE Job_ID = %s;", (job_id,))
+                row = cur.fetchone()
+                if row:
+                    cur.execute("UPDATE Metro SET Current_Status = 'Under Maintenance' WHERE Metro_ID = %s;", (row["Metro_ID"],))
+            return {"status": "success", "message": f"Job {job_id} status updated to {req.status}."}
+

@@ -330,15 +330,7 @@ export default function SchemaTab() {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#27272A]">
         <div>
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase bg-[#C5A880]/10 text-[#C5A880] border border-[#C5A880]/30 rounded-xs">
-              RELATIONAL ARCHITECTURE
-            </span>
-            <span className="text-[11px] font-mono text-neutral-400">
-              smart_metro_db // 3NF Master Schema
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             Database Schema & ER Architecture
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
@@ -882,7 +874,7 @@ export default function SchemaTab() {
           {/* Modal Footer */}
           <div className="flex items-center justify-between pt-2 px-2 text-[11px] font-mono text-neutral-400">
             <span>Scroll horizontally/vertically to pan around • Press Esc or ✕ to close</span>
-            <span className="text-[#C5A880]">smart_metro_db // Chen Notation Master Diagram</span>
+            <span className="text-[#C5A880]">smart_metro_db • Chen Notation Master Diagram</span>
           </div>
         </div>
       )}

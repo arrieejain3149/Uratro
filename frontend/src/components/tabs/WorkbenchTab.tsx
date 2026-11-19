@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Play, Trash2, Clock, CheckCircle2, AlertTriangle, Download, Database, Search, History, Copy, Check } from 'lucide-react';
+import { Play, Trash2, Clock, CheckCircle2, AlertTriangle, Download, Database, Search, Copy, Check } from 'lucide-react';
 
 interface QueryResult {
   status: 'idle' | 'loading' | 'success' | 'error';
@@ -138,35 +138,15 @@ export default function WorkbenchTab() {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-[#27272A]">
         <div>
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase bg-[#C5A880]/10 text-[#C5A880] border border-[#C5A880]/30 rounded-xs">
-              DBMS CONSOLE
-            </span>
-            <span className="text-[11px] font-mono text-neutral-400">
-              MySQL 8.0 // smart_metro_db
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             SQL Workbench
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
-            Execute native SQL statements directly against your relational metro database and inspect live tabular outputs.
-          </p>
-        </div>
-
-        {/* Status Indicators */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#18181B] border border-[#27272A] text-xs font-mono">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-neutral-300">MySQL Host: localhost:3306</span>
-          </div>
         </div>
       </div>
 
       {/* Preset Query Chips */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
-          <span>// QUICK QUERY PRESETS</span>
           <span className="text-[10px] text-neutral-400">Click any preset to populate & execute</span>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -380,9 +360,8 @@ export default function WorkbenchTab() {
       {/* Query History Bar */}
       {history.length > 0 && (
         <div className="bg-[#18181B] border border-[#27272A] rounded-sm p-4 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-mono text-neutral-400">
-            <History className="w-3.5 h-3.5 text-[#C5A880]" />
-            <span>// RECENT QUERY LOG</span>
+          <div className="text-xs font-mono text-neutral-400">
+            <span>Recent Query Log</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {history.map((h, i) => (

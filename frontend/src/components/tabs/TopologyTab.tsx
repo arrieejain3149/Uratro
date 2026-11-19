@@ -141,20 +141,9 @@ export default function TopologyTab({ onNavigateToSimulator }: TopologyTabProps)
       {/* Top Header Bar */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-4 border-b border-[#27272A] gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 text-[10px] font-mono tracking-widest uppercase bg-[#C5A880]/15 text-[#C5A880] border border-[#C5A880]/30 rounded-xs">
-              GEOSPATIAL TOPOLOGY
-            </span>
-            <span className="text-xs font-mono text-neutral-400">
-              Uber H3 Hexagonal Grid (Res 8) // Jaipur Metro
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
             2D Metro Network &amp; Route Topology
           </h1>
-          <p className="text-xs text-neutral-400 mt-0.5">
-            Real-world coordinate mapping featuring intersecting Pink and Blue lines, H3 station catchment zones, and live commuter congestion telemetry.
-          </p>
         </div>
 
         {/* Corridor Filters & Layer Controls */}
@@ -259,7 +248,7 @@ export default function TopologyTab({ onNavigateToSimulator }: TopologyTabProps)
           <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 font-mono text-[10px] text-neutral-400 pointer-events-none">
             <div className="flex items-center gap-1.5 bg-[#141416]/90 border border-[#27272A] px-2.5 py-1 rounded">
               <Navigation className="w-3 h-3 text-[#C5A880] -rotate-45" />
-              <span>JAIPUR METRO // 26.9124° N, 75.7873° E</span>
+              <span>JAIPUR METRO &bull; 26.9124° N, 75.7873° E</span>
             </div>
             <div className="bg-[#141416]/90 border border-[#27272A] px-2.5 py-1 rounded flex items-center gap-3">
               <span className="flex items-center gap-1.5">
